@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "525772928745",
+    "firebase_url": "https://calculation-b9cac.firebaseio.com",
+    "project_id": "calculation-b9cac",
+    "storage_bucket": "calculation-b9cac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525772928745:android:668aa49c815cf510",
+        "android_client_info": {
+          "package_name": "com.cwave.calculation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525772928745-95jrr3rbr2f3copgudlmf7361qhc7te4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALEEYsRhFnlhNOdCWM98daFEOYCzhfmM8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

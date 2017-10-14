@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Exchange</string>
+
+    <string name="android_studio">Android Studio</string>
+    <string name="android_studio_email">android.studio@android.com</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_header_image">Navigation header</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="drawer_import">Import</string>
+    <string name="drawer_gallery">Gallery</string>
+    <string name="drawer_share">Share</string>
+    <string name="drawer_slideshow">Slideshow</string>
+    <string name="drawer_tools">Tools</string>
+    <string name="drawer_communicate">Communicate</string>
+    <string name="drawer_send">Send</string>
+
+    <string name="filter_view_https_cwave">cwave.com</string>
+</resources>

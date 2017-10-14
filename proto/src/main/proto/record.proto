@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package cwave.calculation.proto; // Requried to generate valid code.
+
+option java_package = "com.cwave.proto.record";
+option java_outer_classname = "Proto";
+
+message Record {
+  string name = 1;
+  string question = 2;
+}

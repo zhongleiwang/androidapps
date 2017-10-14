@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package cwave.exchange.proto; // Requried to generate valid code.
+
+option java_package = "com.cwave.proto.user";
+option java_outer_classname = "Proto";
+
+message User {
+  // User id
+  string id = 1;
+
+  // User name
+  string name = 2;
+
+  // User info
+  string email = 3;
+}

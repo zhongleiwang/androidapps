@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <color name="white">#fff</color>
+  <color name="grey_light">#fafafa</color>
+  <color name="grey">#eee</color>
+  <color name="grey_medium">#ccc</color>
+  <color name="grey_dark">#9e9e9e</color>
+  <color name="grey_darker">#767676</color>
+  <color name="grey_darkest">#575757</color>
+  <color name="grey_transparent">#42000000</color>
+  <color name="black">#000000</color>
+  <color name="green">#008600</color>
+  <color name="red">#cf4034</color>
+  <color name="cream">#fcf6ec</color>
+  <color name="yellow_neon">#c7de25</color>
+  <color name="yellow_light">#edb401</color>
+  <color name="yellow_dark">#f09300</color>
+
+  <color name="primary">#558b2f</color>
+  <color name="primary_dark">#33691e</color>
+  <color name="accent">#33691e</color>
+  <color name="accent_2">#932254</color>
+  <color name="button_text">@color/primary_dark</color>
+  <color name="window_background">@color/grey_light</color>
+
+  <color name="tab_indicator">@color/white</color>
+  <color name="header_background">@color/grey</color>
+  <color name="header_background_border">@color/grey_medium</color>
+  <color name="header_text_color">@color/grey_darkest</color>
+  <color name="drawer_layout_header_text">@color/grey</color>
+  <color name="disabled_button_text">@color/grey_transparent</color>
+  <color name="swipe_to_refresh">@color/yellow_dark</color>
+
+  <color name="logo_icon_open">@color/white</color>
+  <color name="logo_icon_closed">@color/black</color>
+  <color name="logo_closed">@color/grey</color>
+  <color name="logo_pink_700">#c2185b</color>
+  <color name="logo_purple_700">#7b1fa2</color>
+  <color name="logo_deep_purple_700">#512da8</color>
+  <color name="logo_light_blue_600">#039be5</color>
+  <color name="logo_light_blue_900">#01579b</color>
+  <color name="logo_cyan_700">#0097a7</color>
+  <color name="logo_teal_600">#00897b</color>
+  <color name="logo_teal_900">#004d40</color>
+  <color name="logo_light_green_700">#689f38</color>
+  <color name="logo_light_green_900">#33691e</color>
+  <color name="logo_orange_800">#ef6c00</color>
+  <color name="logo_deep_orange_600">#f4511e</color>
+  <color name="logo_deep_orange_900">#ef6c00</color>
+
+</resources>

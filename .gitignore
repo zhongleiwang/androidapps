@@ -12,3 +12,17 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+.gradle
+
+# Added by Android Studio
+*.iml
+.DS_Store
+/androidapps.iml
+/local.properties
+/local.properties
+/.idea/misc.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
+/.idea/libraries
+

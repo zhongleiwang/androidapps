@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <item
+     android:id="@+id/pre_k"
+     android:orderInCategory="100"
+     android:title="@string/pre_k"
+     app:showAsAction="never"/>
+  <item
+     android:id="@+id/kinder"
+     android:orderInCategory="200"
+     android:title="@string/kinder"
+     app:showAsAction="never"/>
+  <item
+     android:id="@+id/first_grade"
+     android:orderInCategory="300"
+     android:title="@string/first_grade"
+     app:showAsAction="never"/>
+  <item
+     android:id="@+id/second_grade"
+     android:orderInCategory="400"
+     android:title="@string/second_grade"
+     app:showAsAction="never"/>
+  <item
+     android:id="@+id/third_grade"
+     android:orderInCategory="500"
+     android:title="@string/third_grade"
+     app:showAsAction="never"/>
+
+</menu>

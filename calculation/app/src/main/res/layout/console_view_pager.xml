@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/console_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <android.support.design.widget.AppBarLayout
+      android:id="@+id/console_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/console_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/console_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/tab_indicator" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <android.support.v4.view.ViewPager
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/console_view_pager"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+</android.support.design.widget.CoordinatorLayout>
+
