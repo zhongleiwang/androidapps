@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.cwave.exchange.R;
+import com.cwave.firebase.Auth;
+import com.cwave.firebase.AuthImpl;
 import com.cwave.firebase.Database;
 import com.cwave.firebase.DatabaseImpl;
 import com.cwave.firebase.Store;
@@ -64,5 +66,11 @@ public class ExchangeModule {
   @Singleton
   static Store provideFirebaseStore() {
     return new StoreImpl();
+  }
+
+  @Provides
+  @Singleton
+  static Auth provideFirebaseAuth() {
+    return new AuthImpl();
   }
 }

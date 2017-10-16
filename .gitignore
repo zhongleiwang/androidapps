@@ -1,4 +1,4 @@
-.gradle
+# build output files
 /build/
 
 # Ignore Gradle GUI config
@@ -13,16 +13,13 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-.gradle
+# OSX files
+.DS_Store
+
+# Local configuration file (sdk path, etc)
+local.properties
 
 # Added by Android Studio
+.gradle
+.idea
 *.iml
-.DS_Store
-/androidapps.iml
-/local.properties
-/local.properties
-/.idea/misc.xml
-/.idea/vcs.xml
-/.idea/workspace.xml
-/.idea/libraries
-

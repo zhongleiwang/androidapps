@@ -5,11 +5,15 @@ android {
     buildToolsVersion "26.0.2"
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
+        // As of version 2.1.0 FirebaseUI includes translations for all string resources.
+        // In order to ensure that you only get the translations relevant to your application,
+        // we recommend changing the resConfigs of your application module:
+        resConfigs "auto"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -29,7 +33,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    // play service auth
+    compile "com.google.android.gms:play-services-auth:11.4.2"
     // Guava
     compile 'com.google.guava:guava:23.0-android'
     // https://github.com/google/dagger/issues/753
@@ -37,11 +43,24 @@ dependencies {
     // auto value
     provided 'com.google.auto.value:auto-value:1.5'
     // firebase
+    compile "com.google.firebase:firebase-auth:11.4.2"
     compile 'com.google.firebase:firebase-core:11.4.2'
     compile 'com.google.firebase:firebase-database:11.4.2'
     compile 'com.google.firebase:firebase-firestore:11.4.2'
     compile 'com.google.firebase:firebase-storage:11.4.2'
+    // FirebaseUI (for authentication)
+    compile 'com.firebaseui:firebase-ui-auth:3.0.0'
+    // FirebaseUI for Firebase Realtime Database
+    compile 'com.firebaseui:firebase-ui-database:3.0.0'
+    // FirebaseUI for Cloud Firestore
+    compile 'com.firebaseui:firebase-ui-firestore:3.0.0'
+    // FirebaseUI for Cloud Storage
+    compile 'com.firebaseui:firebase-ui-storage:3.0.0'
+    // protostuff
+    compile 'io.protostuff:protostuff-core:1.6.0'
+    compile 'io.protostuff:protostuff-runtime:1.6.0'
+    // depends on proto project
+    compile project(':proto')
     // test
     testCompile 'junit:junit:4.12'
-    compile project(':proto')
 }

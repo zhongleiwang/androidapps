@@ -1,3 +1,4 @@
+apply from: 'constants.gradle'
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
@@ -20,9 +21,10 @@ buildscript {
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "26.0.0"
     defaultConfig {
         applicationId "com.cwave.exchange"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -81,9 +83,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-annotations:25.3.1'
     // multidex support prior to Android 5.0
     compile 'com.android.support:multidex:1.0.1'
@@ -112,6 +114,14 @@ dependencies {
     compile 'com.google.firebase:firebase-database:11.4.2'
     compile 'com.google.firebase:firebase-firestore:11.4.2'
     compile 'com.google.firebase:firebase-storage:11.4.2'
+    // FirebaseUI (for authentication)
+    compile 'com.firebaseui:firebase-ui-auth:3.0.0'
+    // FirebaseUI for Firebase Realtime Database
+    compile 'com.firebaseui:firebase-ui-database:3.0.0'
+    // FirebaseUI for Cloud Firestore
+    compile 'com.firebaseui:firebase-ui-firestore:3.0.0'
+    // FirebaseUI for Cloud Storage
+    compile 'com.firebaseui:firebase-ui-storage:3.0.0'
     // firebase
     compile project(':firebase')
     // proto

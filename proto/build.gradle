@@ -18,7 +18,7 @@ buildscript {
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion "26.0.1"
 
     defaultConfig {
         minSdkVersion 14
@@ -85,7 +85,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:appcompat-v7:26.0.1'
     // protobuf
     compile 'com.google.protobuf:protobuf-lite:3.0.0'
     // protobuf-java-format

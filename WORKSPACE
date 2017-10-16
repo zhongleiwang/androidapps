@@ -2,7 +2,7 @@ android_sdk_repository(
     name = "androidsdk",
     path = "/opt/Android/sdk",
     api_level = 26,
-    build_tools_version = "26.0.1"
+    build_tools_version = "26.0.0"
 )
 
 android_ndk_repository(
@@ -105,6 +105,11 @@ maven_jar(
 )
 
 maven_jar(
+    name = "com_googlecode_protobuf_java_format_protobuf_java_format",
+    artifact = "com.googlecode.protobuf-java-format:protobuf-java-format:1.4",
+)
+
+maven_jar(
     name = "com_google_errorprone_javac",
     artifact = "com.google.errorprone:javac-shaded:9-dev-r4023-3",
     sha1 = "72b688efd290280a0afde5f9892b0fde6f362d1d",
@@ -150,6 +155,11 @@ maven_jar(
     name = "com_google_errorprone_error_prone_annotations",
     artifact = "com.google.errorprone:error_prone_annotations:2.0.12",
     sha1 = "8530d22d4ae8419e799d5a5234e0d2c0dcf15d4b",
+)
+
+maven_jar(
+    name = "io_protostuff_protostuff_core",
+    artifact = "io.protostuff:protostuff-core:1.6.0",
 )
 
 maven_jar(

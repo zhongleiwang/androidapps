@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,5 +18,24 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PurpleTheme">
+        <item name="colorPrimary">@color/material_deep_purple_500</item>
+        <item name="colorPrimaryDark">@color/material_deep_purple_700</item>
+        <item name="colorAccent">@color/material_lime_a700</item>
+        <item name="android:windowBackground">@color/material_deep_purple_50</item>
+    </style>
+
+    <style name="GreenTheme">
+        <item name="colorPrimary">@color/material_green_500</item>
+        <item name="colorPrimaryDark">@color/material_green_700</item>
+        <item name="colorAccent">@color/material_purple_a700</item>
+        <item name="android:windowBackground">@color/material_green_50</item>
+    </style>
+
+    <style name="WarnButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/material_red_a200</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
 </resources>

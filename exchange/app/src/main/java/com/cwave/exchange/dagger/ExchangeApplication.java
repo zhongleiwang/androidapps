@@ -2,6 +2,7 @@ package com.cwave.exchange.dagger;
 
 import android.app.Activity;
 import android.app.Application;
+
 import java.net.CookieHandler;
 import java.net.CookieManager;
 

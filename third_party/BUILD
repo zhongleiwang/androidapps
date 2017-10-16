@@ -211,6 +211,16 @@ java_library(
 )
 
 java_library(
+    name = "protostuff_core",
+    exports = ["@io_protostuff_protostuff_core//jar"],
+)
+
+java_library(
+    name = "protobuf_java_format",
+    exports = ["@com_googlecode_protobuf_java_format_protobuf_java_format//jar"],
+)
+
+java_library(
     name = "otto",
     exports = ["@com_squareup_otto//jar"],
 )

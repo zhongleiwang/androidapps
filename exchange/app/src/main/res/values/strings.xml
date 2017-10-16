@@ -19,4 +19,14 @@
     <string name="drawer_send">Send</string>
 
     <string name="filter_view_https_cwave">cwave.com</string>
+
+    <string name="unknown_response">Unexpected onActivityResult response code</string>
+    <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
+    <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="unknown_error">An unknown error occurred</string>
+
+    <string name="app_welcome">Welcome</string>
+    <string name="button_start_app">Start</string>
+
 </resources>
