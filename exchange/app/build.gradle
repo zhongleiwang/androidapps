@@ -115,13 +115,19 @@ dependencies {
     compile 'com.google.firebase:firebase-firestore:11.4.2'
     compile 'com.google.firebase:firebase-storage:11.4.2'
     // FirebaseUI (for authentication)
-    compile 'com.firebaseui:firebase-ui-auth:3.0.0'
+    compile 'com.firebaseui:firebase-ui:3.1.0'
+    // FirebaseUI (for authentication)
+    compile 'com.firebaseui:firebase-ui-auth:3.1.0'
     // FirebaseUI for Firebase Realtime Database
-    compile 'com.firebaseui:firebase-ui-database:3.0.0'
+    compile 'com.firebaseui:firebase-ui-database:2.1.0'
     // FirebaseUI for Cloud Firestore
-    compile 'com.firebaseui:firebase-ui-firestore:3.0.0'
+    compile 'com.firebaseui:firebase-ui-firestore:3.1.0'
     // FirebaseUI for Cloud Storage
-    compile 'com.firebaseui:firebase-ui-storage:3.0.0'
+    compile 'com.firebaseui:firebase-ui-storage:3.1.0'
+     // Required only if Facebook login support is required
+    compile 'com.facebook.android:facebook-login:4.27.0'
+    // Required only if Twitter login support is required
+    compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
     // firebase
     compile project(':firebase')
     // proto

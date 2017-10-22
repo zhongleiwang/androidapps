@@ -1,49 +1,57 @@
 package com.cwave.exchange.trading;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.cwave.exchange.R;
+import com.cwave.exchange.chat.ChatFragment;
+import com.cwave.exchange.drawermenu.DrawerMenu;
+import com.cwave.exchange.drawermenu.DrawerMenu.MenuField;
+import com.cwave.exchange.post.PostFragment;
+import com.cwave.exchange.post.PostMessage;
 import com.cwave.exchange.signin.SignInActivity;
+import com.cwave.exchange.trading.OfferDialogFragment.OfferListener;
 import com.cwave.firebase.Auth;
 import com.cwave.firebase.Database;
 import com.cwave.firebase.Store;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasFragmentInjector;
 
+import static com.cwave.exchange.R.drawable;
+import static com.cwave.exchange.R.id;
+import static com.cwave.exchange.R.layout;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-//import com.cwave.firebase.Auth;
+public class TradingActivity extends AppCompatActivity implements
+    HasFragmentInjector,
+    FirebaseAuth.AuthStateListener,
+    OfferListener {
 
-public class TradingActivity extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
+  private static final String TAG = "TradingActivity";
 
-  private static final String TAG = "????TradingActivity";
-
-  private DrawerLayout drawer;
-  private ActionBarDrawerToggle toggle;
+  //private DrawerLayout drawer;
+  private DrawerMenu drawerMenu;
   private RecyclerView recyclerView;
+
+  @Inject
+  DispatchingAndroidInjector<Fragment> fragmentInjector;
 
   @Inject
   Database database;
@@ -61,54 +69,48 @@ public class TradingActivity extends AppCompatActivity
   }
 
   @Override
+  public AndroidInjector<Fragment> fragmentInjector() {
+    return fragmentInjector;
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     AndroidInjection.inject(this);
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_trading);
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setContentView(layout.activity_trading);
+    Toolbar toolbar = (Toolbar) findViewById(id.toolbar);
     setSupportActionBar(toolbar);
 
-    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          createPost(view);
-        }
-      });
+    switchToRootFragement();
 
-    drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    toggle = new ActionBarDrawerToggle(
-        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-    drawer.addDrawerListener(toggle);
+    //drawer = (DrawerLayout) findViewById(id.drawer_layout);
+    //toggle = new ActionBarDrawerToggle(
+    //    this, drawer, toolbar, string.navigation_drawer_open, string.navigation_drawer_close);
+    //drawer.addDrawerListener(toggle);
 
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-    navigationView.setNavigationItemSelectedListener(this);
+    //NavigationView navigationView = (NavigationView) findViewById(id.nav_view);
+    //navigationView.setNavigationItemSelectedListener(this);
+    drawerMenu = new DrawerMenu((DrawerLayout) findViewById(R.id.drawer_layout), MenuField.SEARCH);
+    drawerMenu.startMenu(this);
 
     FirebaseAuth.getInstance().addAuthStateListener(this);
 
-    if (findViewById(R.id.fragment_container) != null) {
-      PostFragment postFragment = new PostFragment();
-
-      getSupportFragmentManager().beginTransaction()
-          .add(R.id.fragment_container, postFragment).commit();
-    }
+    startPostFragment();
   }
 
   @Override
   public void onDestroy() {
     super.onDestroy();
     FirebaseAuth.getInstance().removeAuthStateListener(this);
-    drawer.removeDrawerListener(toggle);
   }
 
   @Override
   public void onBackPressed() {
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    if (drawer.isDrawerOpen(GravityCompat.START)) {
-      drawer.closeDrawer(GravityCompat.START);
-    } else {
-      super.onBackPressed();
+    if (drawerMenu.isOpen()) {
+      drawerMenu.closeMenu();
+      return;
     }
+    super.onBackPressed();
   }
 
   @Override
@@ -124,38 +126,24 @@ public class TradingActivity extends AppCompatActivity
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
+    Log.d(TAG, "option item: " + id);
 
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
+    if (id == android.R.id.home) {
+      Fragment currentFragment = getFragmentManager().findFragmentById(R.id.fragment_container);
+      if (currentFragment instanceof PostFragment) {
+        drawerMenu.openMenu();
+      } else if (currentFragment instanceof ChatFragment) {
+        switchToRootFragement();
+        replaceWithPostFragment();
+      }
+      return true;
+    } else if (id == R.id.action_settings) {
+      return true;
+    } else if (id == R.id.action_search) {
       return true;
     }
 
     return super.onOptionsItemSelected(item);
-  }
-
-  @SuppressWarnings("StatementWithEmptyBody")
-  @Override
-  public boolean onNavigationItemSelected(MenuItem item) {
-    // Handle navigation view item clicks here.
-    int id = item.getItemId();
-
-    if (id == R.id.nav_camera) {
-      // Handle the camera action
-    } else if (id == R.id.nav_gallery) {
-
-    } else if (id == R.id.nav_slideshow) {
-
-    } else if (id == R.id.nav_manage) {
-
-    } else if (id == R.id.nav_share) {
-
-    } else if (id == R.id.nav_send) {
-
-    }
-
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    drawer.closeDrawer(GravityCompat.START);
-    return true;
   }
 
   @Override
@@ -172,30 +160,46 @@ public class TradingActivity extends AppCompatActivity
     this.finish();
   }
 
-  private void createPost(View view) {
-    Log.d(TAG, "data store read/write test");
-    database.read();
-    database.write();
-    store.write();
-
-    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        .setAction("Action", null).show();
-
-    Post post1 = new Post("wang", "123345", getCurrentTime(),
-        "RMB", "Dollar", 1.0f, 100.0f, 100.0f, true);
-    store.write(CollectionName.POSTS, post1);
-
-    Post post3 = Post.builder()
-        .setName("my")
-        .setUid(auth.getCurrentUser().getUid())
-        .setRate(10)
-        .setDate(getCurrentTime())
-        .setFrom("Yen")
-        .build();
-    store.write(CollectionName.POSTS, post3);
+  public void switchToChildFragement() {
+    Log.d(TAG, "switch to child");
+    ActionBar actionBar = getSupportActionBar();
+    actionBar.setHomeAsUpIndicator(drawable.ic_arrow_back_white_24dp);
+    actionBar.setDisplayHomeAsUpEnabled(true);
+    if (drawerMenu.isOpen()) {
+      drawerMenu.closeMenu();
+    }
   }
 
-  private static Date getCurrentTime() {
-    return Calendar.getInstance().getTime();
+  public void switchToRootFragement() {
+    Log.d(TAG, "switch to root");
+    ActionBar ab = getSupportActionBar();
+    ab.setHomeAsUpIndicator(drawable.ic_menu_white_24dp);
+    ab.setDisplayHomeAsUpEnabled(true);
+
+    if (drawerMenu != null && drawerMenu.isOpen()) {
+      drawerMenu.closeMenu();
+    }
+  }
+
+  private void startPostFragment() {
+    PostFragment postFragment = new PostFragment();
+    getFragmentManager().beginTransaction()
+        .add(id.fragment_container, postFragment).commit();
+  }
+
+  private void replaceWithPostFragment() {
+    PostFragment postFragment = new PostFragment();
+    getFragmentManager().beginTransaction()
+        .replace(id.fragment_container, postFragment).commit();
+  }
+
+  @Override
+  public void onOfferSelectedClick(PostMessage post) {
+    store.write(CollectionName.POSTS, post);
+  }
+
+  @Override
+  public void onOfferCancelClick() {
+    // do nothing.
   }
 }

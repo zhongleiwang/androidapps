@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /** Shows sign in screen at first time use. */
 public class SignInActivity extends AppCompatActivity {
 
-  private static final String TAG = "????SignInActivity";
+  private static final String TAG = "SignInActivity";
 
   private static final String PREF_SIGN_IN = "perf_sign_in";
 

@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+  <TextView
+      android:id="@+id/offer_dialog_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Menu And Dishes"
+      android:gravity="center"
+      android:textStyle="bold"
+      android:textSize="20sp"
+      tools:text="" />
+
+  <TextView
+      android:id="@+id/offer_dialog_uid"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="18sp"
+      android:text="uid"
+      android:visibility="invisible"
+      tools:text="" />
+
+  <EditText
+     android:id="@+id/offer_dialog_from"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:textSize="18sp"
+     android:text="from"
+     android:inputType="text"
+     tools:text="" />
+
+  <EditText
+     android:id="@+id/offer_dialog_to"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:textSize="18sp"
+     android:text="to"
+     android:inputType="text"
+     tools:text="" />
+
+</LinearLayout>

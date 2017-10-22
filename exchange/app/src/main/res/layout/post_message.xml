@@ -27,30 +27,36 @@
      android:padding="10dp">
 
     <TextView
-       android:id="@+id/name"
+       android:id="@+id/post_message_name"
        style="@style/TextAppearance.AppCompat.Medium"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:textIsSelectable="true"
        android:textStyle="bold"
        tools:text="Name" />
 
     <TextView
-       android:id="@+id/from_currency"
+       android:id="@+id/post_message_uid"
        style="@style/TextAppearance.AppCompat.Medium"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:textIsSelectable="true"
+       android:textStyle="bold"
+       tools:text="Name" />
+
+    <TextView
+       android:id="@+id/post_message_from_currency"
+       style="@style/TextAppearance.AppCompat.Medium"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
        android:textStyle="bold"
        tools:text="From Dollar" />
 
-    <TextView
-       android:id="@+id/to_currency"
+    <EditText
+       android:id="@+id/post_message_to_currency"
        style="@style/TextAppearance.AppCompat.Small"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:textIsSelectable="true"
-       tools:text="Tooooo" />
+       android:inputType="text"
+       tools:text="Toooo0" />
 
   </LinearLayout>
 
@@ -58,9 +64,9 @@
      android:id="@+id/right_arrow"
      android:layout_width="50dp"
      android:layout_height="50dp"
-     android:layout_alignEnd="@+id/message"
+     android:layout_alignEnd="@+id/post_message"
      android:layout_marginEnd="25dp"
-     android:layout_alignRight="@+id/message"
+     android:layout_alignRight="@+id/post_message"
      android:layout_marginRight="25dp"
      android:layout_alignParentTop="true"
      android:background="@drawable/ic_chat_message_arrow"

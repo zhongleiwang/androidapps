@@ -1,7 +1,5 @@
 package(default_visibility = ["//visibility:public"])
 
-exports_files(["settings.xml"])
-
 java_library(
     name = "jsr250_annotations",
     exports = ["@javax_annotation_jsr250_api//jar"],
@@ -248,6 +246,21 @@ java_library(
 java_library(
     name = "volley",
     exports = ["@com_mcxiaoke_volley_library//jar"],
+)
+        
+java_library(
+    name = "android_arch_lifecycle_common",
+    exports = ["@android_arch_lifecycle_common//jar"],
+)
+
+java_library(
+    name = "com_android_support_support_annotations",
+    exports = ["@com_android_support_support_annotations//jar"],
+)
+
+java_library(
+    name = "com_android_support_constraint_constraint_layout_solver",
+    exports = ["@com_android_support_constraint_constraint_layout_solver//jar"],
 )
 
 java_library(

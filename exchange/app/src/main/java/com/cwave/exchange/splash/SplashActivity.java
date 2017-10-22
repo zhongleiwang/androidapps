@@ -1,6 +1,7 @@
 package com.cwave.exchange.splash;
 
 import android.content.SharedPreferences;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import com.cwave.exchange.signin.SignInActivity;
 public class SplashActivity extends AppCompatActivity {
 
   private static final String PREF_FIRST_TIME_USE = "perf_first_time_use";
+
+  private static final int PERMISSION_REQUEST_CODE = 999;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class SplashActivity extends AppCompatActivity {
             startActivity();
           }
         });
+    Permissions.grantRuntimePermissions(this, PERMISSION_REQUEST_CODE);
   }
 
   private void startActivity() {
