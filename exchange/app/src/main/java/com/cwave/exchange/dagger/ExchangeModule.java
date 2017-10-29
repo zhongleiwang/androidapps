@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.cwave.exchange.R;
+import com.cwave.exchange.invite.InviteManager;
+import com.cwave.exchange.invite.InviteManagerImpl;
 import com.cwave.firebase.Auth;
 import com.cwave.firebase.AuthImpl;
 import com.cwave.firebase.Database;
@@ -72,5 +74,11 @@ public class ExchangeModule {
   @Singleton
   static Auth provideFirebaseAuth() {
     return new AuthImpl();
+  }
+
+  @Provides
+  @Singleton
+  static InviteManager provideInviteManagerImpl() {
+    return new InviteManagerImpl();
   }
 }

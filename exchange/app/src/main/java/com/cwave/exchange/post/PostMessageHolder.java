@@ -33,6 +33,8 @@ public class PostMessageHolder extends RecyclerView.ViewHolder implements View.O
   private final int mGreen300;
   private final int mGray300;
 
+  private String id;
+
   private PostMessageClickListener postMessageClickListener;
 
   /** {@link PostMessageHolder} callback interface. */
@@ -62,6 +64,8 @@ public class PostMessageHolder extends RecyclerView.ViewHolder implements View.O
     uidField.setText(post.getUid());
     fromField.setText(post.getFrom());
     toField.setText(post.getTo());
+
+    id = post.getId();
 
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     setIsSender(currentUser != null && post.getUid().equals(currentUser.getUid()));
@@ -96,9 +100,10 @@ public class PostMessageHolder extends RecyclerView.ViewHolder implements View.O
         + " to:" + toField.getText().toString());
     postMessageClickListener.onPostMessageClick(
         PostMessage.builder()
-            .setDate(Calendar.getInstance().getTime())
+            .setId(id)
             .setName(nameField.getText().toString())
             .setUid(uidField.getText().toString())
+            .setDate(Calendar.getInstance().getTime())
             .setFrom(fromField.getText().toString())
             .setTo(toField.getText().toString())
             .build());

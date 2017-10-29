@@ -2,7 +2,6 @@ package com.cwave.exchange.post;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.cwave.exchange.R;
-import com.cwave.exchange.chat.ChatFragment;
+import com.cwave.exchange.invite.InviteManager;
+import com.cwave.exchange.invite.InviteMessage;
 import com.cwave.exchange.post.PostMessageHolder.PostMessageClickListener;
 import com.cwave.exchange.trading.CollectionName;
 import com.cwave.exchange.trading.OfferDialogFragment;
@@ -45,6 +46,8 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
   // Get the last 50 chat messages ordered by timestamp .
   private static final Query postQuery = postCollection.orderBy("date").limit(50);
 
+  private static final int NOTIFICATION_ID = 999;
+
   private Activity activity;
   private RecyclerView recyclerView;
   private LayoutManager layoutManager;
@@ -59,6 +62,9 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
 
   @Inject
   Auth auth;
+
+  @Inject
+  InviteManager inviteManager;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -170,7 +176,6 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
     Bundle bundle = new Bundle();
     bundle.putString(OfferDialogFragment.USER_KEY, auth.getCurrentUser().getDisplayName());
     bundle.putString(OfferDialogFragment.UID_KEY, auth.getCurrentUser().getUid());
-    bundle.putSerializable(OfferDialogFragment.REQUEST_TYPE, "type");
     offerDialogFragment.setArguments(bundle);
     offerDialogFragment.show(getFragmentManager(), "");
   }
@@ -186,20 +191,30 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
     TradingActivity tradingActivity = (TradingActivity)activity;
     tradingActivity.switchToChildFragement();
 
-    ChatFragment chatFragment = new ChatFragment();
-    Bundle args = new Bundle();
-    args.putString(ChatFragment.COLLECTION_KEY, createCollectionName(postMessage));
-    chatFragment.setArguments(args);
+    String postId = postMessage.getId();
+    String postUid = postMessage.getUid();
+    String postName = postMessage.getName();
+    String uid = auth.getCurrentUser().getUid();
+    String name = auth.getCurrentUser().getDisplayName();
 
-    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-    // Replace whatever is in the fragment_container view with this fragment,
-    // and add the transaction to the back stack so the user can navigate back
-    transaction.replace(R.id.fragment_container, chatFragment);
-    transaction.addToBackStack(null);
-    transaction.commit();
-  }
+    if (postUid.equals(uid)) {
+      Toast.makeText(activity.getApplicationContext(), "It's your post", Toast.LENGTH_LONG).show();
+      return;
+    }
 
-  private String createCollectionName(PostMessage post) {
-    return auth.getCurrentUser().getUid() + ":" + post.getUid();
+    inviteManager.writeInvite(
+        InviteMessage.builder()
+            .setId(auth.getCurrentUser().getUid())
+            .setName(auth.getCurrentUser().getDisplayName())
+            .setPost(postMessage)
+            .build());
+
+    Bundle bundle = new Bundle();
+    bundle.putString(CollectionName.POST_ID_KEY, postId);
+    bundle.putString(CollectionName.POST_NAME_KEY, postName);
+    bundle.putString(CollectionName.POST_UID_KEY, postUid);
+    bundle.putString(CollectionName.NAME_KEY, name);
+    bundle.putString(CollectionName.UID_KEY, uid);
+    ((TradingActivity) activity).startChatFragment(bundle);
   }
 }

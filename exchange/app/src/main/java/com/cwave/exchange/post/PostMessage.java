@@ -13,6 +13,7 @@ import java.util.Date;
  * Just go with POJO.
  */
 public class PostMessage {
+  private String id; // Post unique ID.
   private String name;
   private String uid;
   private Date date;
@@ -35,15 +36,17 @@ public class PostMessage {
     multiple = false;
   }
 
-  public PostMessage(String name,
-              String uid,
-              Date date,
-              String from,
-              String to,
-              float rate,
-              float fromAmount,
-              float toAmount,
-              boolean multiple) {
+  public PostMessage(String id,
+                     String name,
+                     String uid,
+                     Date date,
+                     String from,
+                     String to,
+                     float rate,
+                     float fromAmount,
+                     float toAmount,
+                     boolean multiple) {
+    this.id = id;
     this.name = name;
     this.uid = uid;
     this.date = date;
@@ -54,6 +57,8 @@ public class PostMessage {
     this.toAmount = toAmount;
     this.multiple = multiple;
   }
+
+  public String getId() {return id; }
 
   public String getName() {
     return name;
@@ -91,6 +96,8 @@ public class PostMessage {
   public boolean isMultiple() {
     return multiple;
   }
+
+  public void setId(String id) { this.id = id; }
 
   public void setName(String name) {
     this.name = name;
@@ -137,6 +144,7 @@ public class PostMessage {
   }
   
   public static class Builder {
+    private String id;
     private String name;
     private String uid;
     private Date date;
@@ -148,17 +156,23 @@ public class PostMessage {
     private boolean multiple;
     
     public PostMessage build() {
-      return new PostMessage(name,
-                             uid,
-                             date,
-                             from,
-                             to,
-                             rate,
-                             fromAmount,
-                             toAmount,
-                             multiple);
+      return new PostMessage(id,
+          name,
+          uid,
+          date,
+          from,
+          to,
+          rate,
+          fromAmount,
+          toAmount,
+          multiple);
     }
-    
+
+    public Builder setId(String id) {
+      this.id = id;
+      return this;
+    }
+
     public Builder setName(String name) {
       this.name = name;
       return this;

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.cwave.exchange.R;
 import com.cwave.exchange.post.PostMessage;
+import com.cwave.exchange.util.Uuid;
 
 import java.util.Calendar;
 
@@ -94,6 +95,7 @@ public class OfferDialogFragment extends DialogFragment {
 
   private PostMessage buildPostMessage() {
     return PostMessage.builder()
+        .setId(Uuid.getUuid())
         .setDate(Calendar.getInstance().getTime())
         .setName(nameView.getText().toString())
         .setUid(uidView.getText().toString())

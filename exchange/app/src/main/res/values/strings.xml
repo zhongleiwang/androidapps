@@ -30,4 +30,8 @@
     <string name="app_welcome">Welcome</string>
     <string name="button_start_app">Start</string>
 
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="default_notification_channel_name" translatable="false">fcm_default_name</string>
+    <string name="default_notification_channel_description" translatable="false">fcm_default_description</string>
+
 </resources>

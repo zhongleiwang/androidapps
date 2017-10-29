@@ -3,6 +3,7 @@ package com.cwave.exchange.chat;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
@@ -13,16 +14,25 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.cwave.exchange.R;
+import com.cwave.exchange.trading.CollectionName;
+import com.cwave.exchange.util.ChatRoom;
 import com.cwave.firebase.Auth;
 import com.cwave.firebase.Database;
 import com.cwave.firebase.Store;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -32,7 +42,7 @@ import dagger.android.AndroidInjection;
 public class ChatFragment extends Fragment {
   private static final String TAG = "ChatFragment";
 
-  public static final String COLLECTION_KEY = "collection_key";
+  private static final String CHAT_ROOM = "room";
 
   private RecyclerView recyclerView;
   private LayoutManager layoutManager;
@@ -41,8 +51,12 @@ public class ChatFragment extends Fragment {
   private Activity activity;
   private Query chatQuery;
   private CollectionReference chatCollection;
-  private String collectionName;
   private FirestoreRecyclerAdapter<ChatMessage, ChatMessageHolder> firestoreRecyclerAdapter;
+  private String postId;
+  private String postName;
+  private String postUid;
+  private String name;
+  private String uid;
 
   @Inject
   Store store;
@@ -72,12 +86,49 @@ public class ChatFragment extends Fragment {
     Log.d(TAG, "onCreateView");
     View view = inflater.inflate(R.layout.chat_frame_layout, container, false);
 
-    Bundle arguments = getArguments();
-    collectionName = arguments.getString(COLLECTION_KEY);
-    Log.d(TAG, "collection name: " + collectionName);
+    recyclerView = (RecyclerView) view.findViewById(R.id.chat_frame_recycler_view);
+    layoutManager = new LinearLayoutManager(getActivity());
+    recyclerView.setLayoutManager(layoutManager);
 
-    chatCollection = FirebaseFirestore.getInstance().collection(collectionName);
-    chatQuery = chatCollection.orderBy("date").limit(100);
+    Bundle arguments = getArguments();
+    postId = arguments.getString(CollectionName.POST_ID_KEY);
+    postName = arguments.getString(CollectionName.POST_NAME_KEY);
+    postUid = arguments.getString(CollectionName.POST_UID_KEY);
+    name = arguments.getString(CollectionName.NAME_KEY);
+    uid = arguments.getString(CollectionName.UID_KEY);
+    final String chatRoom = ChatRoom.getPath(postId, postUid, uid);
+
+    Map<String, Object> room = new HashMap<>();
+    room.put("post_id", postId);
+    room.put("post_name", postName);
+    room.put("post_uid", postUid);
+    room.put("name", name);
+    room.put("uid", uid);
+
+    FirebaseFirestore.getInstance()
+        .collection(CollectionName.CHATS)
+        .document(chatRoom)
+        .set(room)
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+          @Override
+          public void onSuccess(Void aVoid) {
+
+            DocumentReference documentReference =
+                FirebaseFirestore.getInstance().collection(CollectionName.CHATS).document(chatRoom);
+
+            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+            chatCollection = documentReference.collection(CHAT_ROOM);
+            chatQuery = chatCollection.orderBy("date").limit(100);
+
+            attachRecyclerViewAdapter();
+          }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+          @Override
+          public void onFailure(@NonNull Exception e) {
+            Log.w(TAG, "Error adding document", e);
+          }
+        });
 
     inputButton = (ImageButton) view.findViewById(R.id.chat_message_input_button);
     inputMessage = (EditText) view.findViewById(R.id.chat_message_input_message);
@@ -89,25 +140,23 @@ public class ChatFragment extends Fragment {
       }
     });
 
-    recyclerView = (RecyclerView) view.findViewById(R.id.chat_frame_recycler_view);
-
-    layoutManager = new LinearLayoutManager(getActivity());
-    recyclerView.setLayoutManager(layoutManager);
-    attachRecyclerViewAdapter();
-
     return view;
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    firestoreRecyclerAdapter.startListening();
+    if (firestoreRecyclerAdapter != null) {
+      firestoreRecyclerAdapter.startListening();
+    }
   }
 
   @Override
   public void onPause() {
     super.onPause();
-    firestoreRecyclerAdapter.stopListening();
+    if (firestoreRecyclerAdapter != null) {
+      firestoreRecyclerAdapter.stopListening();
+    }
   }
 
   private void attachRecyclerViewAdapter() {
@@ -153,13 +202,30 @@ public class ChatFragment extends Fragment {
   }
 
   private void sendMessage(View view) {
-    store.write(collectionName,
-        ChatMessage.builder()
-        .setName(auth.getCurrentUser().getDisplayName())
-        .setUid(auth.getCurrentUser().getUid())
-        .setDate()
-        .setMessage(inputMessage.getText().toString())
-        .build());
-    inputMessage.setText("");
+    Log.d(TAG, "send message");
+
+    chatCollection
+        .add(ChatMessage.builder()
+            .setPostName(postName)
+            .setPostUid(postUid)
+            .setName(auth.getCurrentUser().getDisplayName())
+            .setUid(auth.getCurrentUser().getUid())
+            .setMessage(inputMessage.getText().toString())
+            .build())
+        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+              Log.d(TAG, "user DocumentSnapshot added with ID: " + documentReference.getId());
+              inputMessage.setText("");
+            }
+          })
+        .addOnFailureListener(new OnFailureListener() {
+          @Override
+          public void onFailure(@NonNull Exception e) {
+            Log.e(TAG, "failed to send message " + e);
+            Toast.makeText(activity.getApplicationContext(), "Failed to send message", Toast.LENGTH_LONG).show();
+          }
+        });
+
   }
 }

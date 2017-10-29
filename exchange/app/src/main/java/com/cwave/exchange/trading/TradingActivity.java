@@ -1,10 +1,22 @@
 package com.cwave.exchange.trading;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.Notification.Builder;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +25,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.cwave.exchange.R;
 import com.cwave.exchange.chat.ChatFragment;
 import com.cwave.exchange.drawermenu.DrawerMenu;
 import com.cwave.exchange.drawermenu.DrawerMenu.MenuField;
+import com.cwave.exchange.invite.InviteManager;
+import com.cwave.exchange.invite.InviteMessage;
 import com.cwave.exchange.post.PostFragment;
 import com.cwave.exchange.post.PostMessage;
 import com.cwave.exchange.signin.SignInActivity;
@@ -25,7 +40,25 @@ import com.cwave.exchange.trading.OfferDialogFragment.OfferListener;
 import com.cwave.firebase.Auth;
 import com.cwave.firebase.Database;
 import com.cwave.firebase.Store;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -42,13 +75,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class TradingActivity extends AppCompatActivity implements
     HasFragmentInjector,
     FirebaseAuth.AuthStateListener,
+    EventListener<QuerySnapshot>,
     OfferListener {
 
   private static final String TAG = "TradingActivity";
 
+  private static final int NOTIFICATION_ID = 999;
+
+  private static final int PENDING_INTENT_REQUEST_CODE = 199;
+
   //private DrawerLayout drawer;
   private DrawerMenu drawerMenu;
   private RecyclerView recyclerView;
+  private EventListener<QuerySnapshot> eventListener;
 
   @Inject
   DispatchingAndroidInjector<Fragment> fragmentInjector;
@@ -61,6 +100,9 @@ public class TradingActivity extends AppCompatActivity implements
 
   @Inject
   Auth auth;
+
+  @Inject
+  InviteManager inviteManager;
 
   /** Starts a new {@link TradingActivity} instance. */
   public static void startActivity(Context context) {
@@ -78,24 +120,19 @@ public class TradingActivity extends AppCompatActivity implements
     AndroidInjection.inject(this);
     super.onCreate(savedInstanceState);
     setContentView(layout.activity_trading);
+
+    String token = FirebaseInstanceId.getInstance().getToken();
+    Log.d(TAG, "ID token: " + token);
+
     Toolbar toolbar = (Toolbar) findViewById(id.toolbar);
     setSupportActionBar(toolbar);
 
-    switchToRootFragement();
-
-    //drawer = (DrawerLayout) findViewById(id.drawer_layout);
-    //toggle = new ActionBarDrawerToggle(
-    //    this, drawer, toolbar, string.navigation_drawer_open, string.navigation_drawer_close);
-    //drawer.addDrawerListener(toggle);
-
-    //NavigationView navigationView = (NavigationView) findViewById(id.nav_view);
-    //navigationView.setNavigationItemSelectedListener(this);
     drawerMenu = new DrawerMenu((DrawerLayout) findViewById(R.id.drawer_layout), MenuField.SEARCH);
     drawerMenu.startMenu(this);
 
     FirebaseAuth.getInstance().addAuthStateListener(this);
 
-    startPostFragment();
+    processIntent(getIntent());
   }
 
   @Override
@@ -181,7 +218,7 @@ public class TradingActivity extends AppCompatActivity implements
     }
   }
 
-  private void startPostFragment() {
+  private void startChatFragment() {
     PostFragment postFragment = new PostFragment();
     getFragmentManager().beginTransaction()
         .add(id.fragment_container, postFragment).commit();
@@ -195,11 +232,177 @@ public class TradingActivity extends AppCompatActivity implements
 
   @Override
   public void onOfferSelectedClick(PostMessage post) {
-    store.write(CollectionName.POSTS, post);
+    addPost(CollectionName.POSTS, post);
   }
 
   @Override
   public void onOfferCancelClick() {
     // do nothing.
+  }
+
+  private void addPost(String collectionNmae, final PostMessage postMessage) {
+    FirebaseFirestore.getInstance()
+        .collection(collectionNmae)
+        .document(postMessage.getId())
+        .set(postMessage)
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+          @Override
+          public void onSuccess(Void aVoid) {
+            Log.d(TAG, "Add post " + postMessage.getId());
+          }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+          @Override
+          public void onFailure(@NonNull Exception e) {
+            Log.e(TAG, "Add post failed, " + e);
+            Toast.makeText(getApplicationContext(), "Add post failed: " + e,
+                Toast.LENGTH_LONG).show();
+          }
+        });
+
+    // We then listen to invite
+    inviteManager.listenToInvite(InviteMessage.builder()
+            .setId(auth.getCurrentUser().getUid())
+            .setName(auth.getCurrentUser().getDisplayName())
+            .setPost(postMessage)
+            .build(),
+        this);
+  }
+
+  @Override
+  public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+    Log.d(TAG, "invite on event");
+
+    if (e != null) {
+      Log.e(TAG, "onEvent error " + e);
+      return;
+    }
+    for (DocumentChange change : documentSnapshots.getDocumentChanges()) {
+      switch(change.getType()) {
+        case ADDED:
+          sendInvite(change);
+          break;
+        case MODIFIED:
+          break;
+        case REMOVED:
+          break;
+      }
+    }
+  }
+
+  private void sendInvite(DocumentChange change) {
+    String myUid = auth.getCurrentUser().getUid();
+    InviteMessage inviteMessage = change.getDocument().toObject(InviteMessage.class);
+    Log.d(TAG, "Invite from " + inviteMessage.getPost().getUid() + " from " + inviteMessage.getUid());
+    PostMessage postMessage = inviteMessage.getPost();
+    if (myUid.equals(postMessage.getUid())) {
+      if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        sendNotificationChannelOnO(inviteMessage);
+      } else {
+        sendNotification(inviteMessage);
+      }
+    }
+
+    // We then delete the invite.
+    inviteManager.deleteInvite(inviteMessage);
+  }
+
+  private void sendNotification(InviteMessage inviteMessage) {
+    Log.d(TAG, "sendNotification");
+
+    PostMessage postMessage = inviteMessage.getPost();
+
+    NotificationManager notificationManager =
+        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+    Notification notification = new Builder(getApplication())
+        .setContentTitle("Exchange invite")
+        .setContentText("Invite from " + postMessage.getName())
+        .setSmallIcon(R.drawable.ic_notifications_active_white_24dp)
+        .setContentIntent(buildPendingIntent(inviteMessage))
+        .build();
+    notificationManager.notify(NOTIFICATION_ID, notification);
+  }
+
+  @RequiresApi(api = VERSION_CODES.O)
+  private void sendNotificationChannelOnO(InviteMessage inviteMessage) {
+    Log.d(TAG, "sendNotification on O+");
+
+    PostMessage postMessage = inviteMessage.getPost();
+
+    NotificationManager notificationManager =
+        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    // The id of the channel.
+    String id = getString(R.string.default_notification_channel_id);
+    // The user-visible name of the channel.
+    CharSequence name = getString(R.string.default_notification_channel_name);
+    // The user-visible description of the channel.
+    String description = getString(R.string.default_notification_channel_description);
+    int importance = NotificationManager.IMPORTANCE_HIGH;
+
+    // Configure the notification channel.
+    NotificationChannel channel = new NotificationChannel(id, name, importance);
+    channel.setDescription(description);
+    channel.enableLights(true);
+    channel.setLightColor(Color.RED);
+    channel.enableVibration(true);
+    channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+    notificationManager.createNotificationChannel(channel);
+
+    Notification notification = new Builder(getApplication())
+        .setContentTitle("Exchange invite")
+        .setContentText("Invite from " + postMessage.getName())
+        .setSmallIcon(R.drawable.ic_notifications_active_white_24dp)
+        .setChannelId(id)
+        .setContentIntent(buildPendingIntent(inviteMessage))
+        .build();
+    notificationManager.notify(NOTIFICATION_ID, notification);
+  }
+
+  private void processIntent(Intent intent) {
+    Log.d(TAG, "processIntent");
+    if (intent != null && intent.getExtras() != null) {
+      Bundle bundle = intent.getExtras();
+      if (bundle != null) {
+        switchToChildFragement();
+        startChatFragment(bundle);
+      }
+    } else {
+      switchToRootFragement();
+      startPostFragment();
+    }
+  }
+
+  private void startPostFragment() {
+    PostFragment postFragment = new PostFragment();
+    getFragmentManager().beginTransaction()
+        .add(id.fragment_container, postFragment).commit();
+  }
+
+  public void startChatFragment(Bundle bundle) {
+    ChatFragment chatFragment = new ChatFragment();
+    chatFragment.setArguments(bundle);
+    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+    transaction.replace(R.id.fragment_container, chatFragment);
+    transaction.addToBackStack(null);
+    transaction.commit();
+  }
+
+  private Bundle buildNotificationBundle(InviteMessage inviteMessage) {
+    PostMessage postMessage = inviteMessage.getPost();
+    Bundle bundle = new Bundle();
+    bundle.putString(CollectionName.POST_ID_KEY, postMessage.getId());
+    bundle.putString(CollectionName.POST_UID_KEY, postMessage.getUid());
+    bundle.putString(CollectionName.POST_NAME_KEY, postMessage.getName());
+    bundle.putString(CollectionName.UID_KEY, inviteMessage.getUid());
+    bundle.putString(CollectionName.NAME_KEY, inviteMessage.getName());
+    return bundle;
+  }
+
+  private PendingIntent buildPendingIntent(InviteMessage inviteMessage) {
+    Intent intent = new Intent(this, TradingActivity.class);
+    Bundle bundle = buildNotificationBundle(inviteMessage);
+    intent.putExtras(bundle);
+    return PendingIntent.getActivity(this, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 }

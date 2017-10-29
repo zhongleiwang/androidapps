@@ -13,26 +13,35 @@ import java.util.Date;
  * Just go with POJO.
  */
 public class ChatMessage {
+  private String postName;
+  private String postUid;
   private String name;
   private String uid;
   private Date date;
   private String message;
 
-  public ChatMessage() {
-    name = "";
-    uid = "";
-    date = Calendar.getInstance().getTime();
-    message = "";
-  }
+  public ChatMessage() {}
 
-  public ChatMessage(String name,
-              String uid,
-              Date date,
-              String message) {
+  public ChatMessage(String postName,
+                     String postUid,
+                     String name,
+                     String uid,
+                     Date date,
+                     String message) {
+    this.postName = postName;
+    this.postUid = postUid;
     this.name = name;
     this.uid = uid;
     this.date = date;
     this.message = message;
+  }
+
+  public String getPostName() {
+    return postName;
+  }
+
+  public String getPostUid() {
+    return postUid;
   }
 
   public String getName() {
@@ -52,8 +61,20 @@ public class ChatMessage {
     return message;
   }
 
+  public void setPostName(String postName) {
+    this.postName = postName;
+  }
+
+  public void setPostUid(String postUid) {
+    this.postUid = postUid;
+  }
+
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setUid(String uid) {
+    this.uid = uid;
   }
 
   public void setDate(Date date) {
@@ -64,10 +85,6 @@ public class ChatMessage {
     date = Calendar.getInstance().getTime();
   }
      
-  public void setUid(String uid) {
-    this.uid = uid;
-  }
-
   public void setMessage(String message) {
     this.message = message;
   }
@@ -77,23 +94,42 @@ public class ChatMessage {
   }
   
   public static class Builder {
+    private String postName;
+    private String postUid;
     private String name;
     private String uid;
     private Date date;
     private String message;
     
     public ChatMessage build() {
-      return new ChatMessage(name,
-                             uid,
-                             date,
-                             message);
+      return new ChatMessage(postName,
+          postUid,
+          name,
+          uid,
+          date,
+          message);
     }
-    
+
+    public Builder setPostName(String name) {
+      this.postName = name;
+      return this;
+    }
+
+    public Builder setPostUid(String uid) {
+      this.postUid = uid;
+      return this;
+    }
+
     public Builder setName(String name) {
       this.name = name;
       return this;
     }
-    
+
+    public Builder setUid(String uid) {
+      this.uid = uid;
+      return this;
+    }
+
     public Builder setDate(Date date) {
       this.date = date;
       return this;
@@ -101,11 +137,6 @@ public class ChatMessage {
 
     public Builder setDate() {
       this.date = Calendar.getInstance().getTime();
-      return this;
-    }
-    
-    public Builder setUid(String uid) {
-      this.uid = uid;
       return this;
     }
     
