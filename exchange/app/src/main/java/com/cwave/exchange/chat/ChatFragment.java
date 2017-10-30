@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.cwave.exchange.R;
+import com.cwave.exchange.invite.InviteMessage;
+import com.cwave.exchange.post.PostMessage;
 import com.cwave.exchange.trading.CollectionName;
 import com.cwave.exchange.util.ChatRoom;
 import com.cwave.firebase.Auth;
@@ -31,9 +33,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
@@ -41,8 +40,6 @@ import dagger.android.AndroidInjection;
 /** Fragment that displays chat. */
 public class ChatFragment extends Fragment {
   private static final String TAG = "ChatFragment";
-
-  private static final String CHAT_ROOM = "room";
 
   private RecyclerView recyclerView;
   private LayoutManager layoutManager;
@@ -91,44 +88,23 @@ public class ChatFragment extends Fragment {
     recyclerView.setLayoutManager(layoutManager);
 
     Bundle arguments = getArguments();
-    postId = arguments.getString(CollectionName.POST_ID_KEY);
-    postName = arguments.getString(CollectionName.POST_NAME_KEY);
-    postUid = arguments.getString(CollectionName.POST_UID_KEY);
-    name = arguments.getString(CollectionName.NAME_KEY);
-    uid = arguments.getString(CollectionName.UID_KEY);
-    final String chatRoom = ChatRoom.getPath(postId, postUid, uid);
+    InviteMessage inviteMessage = arguments.getParcelable(CollectionName.INVITE_MESSAGE_KEY);
+    PostMessage postMessage = inviteMessage.getPost();
+    postId = postMessage.getId();
+    postName = postMessage.getName();
+    postUid = postMessage.getUid();
+    uid = inviteMessage.getUid();
+    name = inviteMessage.getName();
 
-    Map<String, Object> room = new HashMap<>();
-    room.put("post_id", postId);
-    room.put("post_name", postName);
-    room.put("post_uid", postUid);
-    room.put("name", name);
-    room.put("uid", uid);
+    // chat room in structure
+    // chats/post_id/post_uid/uid/
+    //                           /inviteMessage (doc)
+    //                           /messages
+    writeInviteMessage(inviteMessage);
 
-    FirebaseFirestore.getInstance()
-        .collection(CollectionName.CHATS)
-        .document(chatRoom)
-        .set(room)
-        .addOnSuccessListener(new OnSuccessListener<Void>() {
-          @Override
-          public void onSuccess(Void aVoid) {
-
-            DocumentReference documentReference =
-                FirebaseFirestore.getInstance().collection(CollectionName.CHATS).document(chatRoom);
-
-            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-            chatCollection = documentReference.collection(CHAT_ROOM);
-            chatQuery = chatCollection.orderBy("date").limit(100);
-
-            attachRecyclerViewAdapter();
-          }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-          @Override
-          public void onFailure(@NonNull Exception e) {
-            Log.w(TAG, "Error adding document", e);
-          }
-        });
+    chatCollection = FirebaseFirestore.getInstance().collection(ChatRoom.getRoomPath(inviteMessage));
+    chatQuery = chatCollection.orderBy("date").limit(100);
+    attachRecyclerViewAdapter();
 
     inputButton = (ImageButton) view.findViewById(R.id.chat_message_input_button);
     inputMessage = (EditText) view.findViewById(R.id.chat_message_input_message);
@@ -141,6 +117,26 @@ public class ChatFragment extends Fragment {
     });
 
     return view;
+  }
+
+  public void writeInviteMessage(InviteMessage inviteMessage) {
+    Log.d(TAG, "writeInvite " + inviteMessage.getPost().getId() + " : " + inviteMessage.getPost().getUid());
+
+    FirebaseFirestore.getInstance()
+        .collection(ChatRoom.getMetaPath(inviteMessage))
+        .document(inviteMessage.getUid())
+        .set(inviteMessage)
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+          @Override
+          public void onSuccess(Void aVoid) {
+          }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+          @Override
+          public void onFailure(@NonNull Exception e) {
+            Log.e(TAG, "Write invite failed " + e);
+          }
+        });
   }
 
   @Override

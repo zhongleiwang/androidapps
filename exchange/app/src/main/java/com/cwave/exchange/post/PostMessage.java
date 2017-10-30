@@ -1,5 +1,8 @@
 package com.cwave.exchange.post;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Calendar;
@@ -12,7 +15,7 @@ import java.util.Date;
  * autovalue might be a good option, but seems Firebase might not have good support.
  * Just go with POJO.
  */
-public class PostMessage {
+public class PostMessage implements Parcelable {
   private String id; // Post unique ID.
   private String name;
   private String uid;
@@ -142,7 +145,50 @@ public class PostMessage {
   public static Builder builder() {
     return new Builder();
   }
-  
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(id);
+    dest.writeString(name);
+    dest.writeString(uid);
+    dest.writeSerializable(date);
+    dest.writeString(from);
+    dest.writeString(to);
+    dest.writeFloat(rate);
+    dest.writeFloat(fromAmount);
+    dest.writeFloat(toAmount);
+    dest.writeByte((byte)(multiple ? 1 : 0));
+  }
+
+  public static final Parcelable.Creator<PostMessage> CREATOR
+      = new Parcelable.Creator<PostMessage>() {
+    public PostMessage createFromParcel(Parcel in) {
+      return new PostMessage(in);
+    }
+
+    public PostMessage[] newArray(int size) {
+      return new PostMessage[size];
+    }
+  };
+
+  private PostMessage(Parcel in) {
+    id = in.readString();
+    name = in.readString();
+    uid = in.readString();
+    date = (Date)in.readSerializable();
+    from = in.readString();
+    to = in.readString();
+    rate =  in.readFloat();
+    fromAmount = in.readFloat();
+    toAmount = in.readFloat();
+    multiple = (in.readByte() == 1) ? true : false;
+  }
+
   public static class Builder {
     private String id;
     private String name;

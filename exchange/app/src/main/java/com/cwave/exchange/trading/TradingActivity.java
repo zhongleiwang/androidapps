@@ -218,12 +218,6 @@ public class TradingActivity extends AppCompatActivity implements
     }
   }
 
-  private void startChatFragment() {
-    PostFragment postFragment = new PostFragment();
-    getFragmentManager().beginTransaction()
-        .add(id.fragment_container, postFragment).commit();
-  }
-
   private void replaceWithPostFragment() {
     PostFragment postFragment = new PostFragment();
     getFragmentManager().beginTransaction()
@@ -310,16 +304,15 @@ public class TradingActivity extends AppCompatActivity implements
   private void sendNotification(InviteMessage inviteMessage) {
     Log.d(TAG, "sendNotification");
 
-    PostMessage postMessage = inviteMessage.getPost();
-
     NotificationManager notificationManager =
         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
     Notification notification = new Builder(getApplication())
         .setContentTitle("Exchange invite")
-        .setContentText("Invite from " + postMessage.getName())
+        .setContentText("Invite from " + inviteMessage.getPost().getName())
         .setSmallIcon(R.drawable.ic_notifications_active_white_24dp)
         .setContentIntent(buildPendingIntent(inviteMessage))
+        .setAutoCancel(true)
         .build();
     notificationManager.notify(NOTIFICATION_ID, notification);
   }
@@ -355,6 +348,7 @@ public class TradingActivity extends AppCompatActivity implements
         .setSmallIcon(R.drawable.ic_notifications_active_white_24dp)
         .setChannelId(id)
         .setContentIntent(buildPendingIntent(inviteMessage))
+        .setAutoCancel(true)
         .build();
     notificationManager.notify(NOTIFICATION_ID, notification);
   }
@@ -364,6 +358,7 @@ public class TradingActivity extends AppCompatActivity implements
     if (intent != null && intent.getExtras() != null) {
       Bundle bundle = intent.getExtras();
       if (bundle != null) {
+
         switchToChildFragement();
         startChatFragment(bundle);
       }
@@ -389,13 +384,8 @@ public class TradingActivity extends AppCompatActivity implements
   }
 
   private Bundle buildNotificationBundle(InviteMessage inviteMessage) {
-    PostMessage postMessage = inviteMessage.getPost();
     Bundle bundle = new Bundle();
-    bundle.putString(CollectionName.POST_ID_KEY, postMessage.getId());
-    bundle.putString(CollectionName.POST_UID_KEY, postMessage.getUid());
-    bundle.putString(CollectionName.POST_NAME_KEY, postMessage.getName());
-    bundle.putString(CollectionName.UID_KEY, inviteMessage.getUid());
-    bundle.putString(CollectionName.NAME_KEY, inviteMessage.getName());
+    bundle.putParcelable(CollectionName.INVITE_MESSAGE_KEY, inviteMessage);
     return bundle;
   }
 
@@ -403,6 +393,9 @@ public class TradingActivity extends AppCompatActivity implements
     Intent intent = new Intent(this, TradingActivity.class);
     Bundle bundle = buildNotificationBundle(inviteMessage);
     intent.putExtras(bundle);
-    return PendingIntent.getActivity(this, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    return PendingIntent.getActivity(this,
+        PENDING_INTENT_REQUEST_CODE,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT);
   }
 }

@@ -25,8 +25,9 @@ public class InviteManagerImpl implements InviteManager {
   private static final String TAG = "InviteManager";
 
   private static final String SEPERATOR = "/";
-
-  private Map<String, Object> meta = new HashMap<>();
+  private static final String POST_ID = "post_id";
+  private static final String POST_UID = "post_uid";
+  private static final String UID = "uid";
 
   public InviteManagerImpl() {}
 
@@ -35,7 +36,7 @@ public class InviteManagerImpl implements InviteManager {
     Log.d(TAG, "writeInvite " + inviteMessage.getPost().getId() + " : " + inviteMessage.getPost().getUid());
 
     FirebaseFirestore.getInstance()
-        .collection(buildPath(inviteMessage))
+        .collection(getInvitePath(inviteMessage))
         .document(inviteMessage.getUid())
         .set(inviteMessage)
         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -57,7 +58,7 @@ public class InviteManagerImpl implements InviteManager {
     Log.d(TAG, "writeInvite " + inviteMessage.getPost().getId() + " : " + inviteMessage.getPost().getUid());
 
     FirebaseFirestore.getInstance()
-        .collection(buildPath(inviteMessage))
+        .collection(getInvitePath(inviteMessage))
         .document(inviteMessage.getUid())
         .delete()
         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -76,14 +77,17 @@ public class InviteManagerImpl implements InviteManager {
 
   @Override
   public void listenToInvite(final InviteMessage inviteMessage, final EventListener<QuerySnapshot> eventListener) {
-    CollectionReference collectionReference = FirebaseFirestore.getInstance().collection(buildPath(inviteMessage));
-    collectionReference.addSnapshotListener(eventListener);
+    FirebaseFirestore.getInstance()
+        .collection(getInvitePath(inviteMessage))
+        .addSnapshotListener(eventListener);
   }
 
-  private static String buildPath(InviteMessage inviteMessage) {
+  private static String getInvitePath(InviteMessage inviteMessage) {
     PostMessage postMessage = inviteMessage.getPost();
     return CollectionName.INVITES + SEPERATOR
+        + POST_ID + SEPERATOR
         + postMessage.getId() + SEPERATOR
+        + POST_UID + SEPERATOR
         + postMessage.getUid();
   }
 }

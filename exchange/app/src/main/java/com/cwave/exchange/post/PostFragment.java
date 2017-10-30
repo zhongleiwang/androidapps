@@ -191,30 +191,25 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
     TradingActivity tradingActivity = (TradingActivity)activity;
     tradingActivity.switchToChildFragement();
 
-    String postId = postMessage.getId();
-    String postUid = postMessage.getUid();
-    String postName = postMessage.getName();
     String uid = auth.getCurrentUser().getUid();
     String name = auth.getCurrentUser().getDisplayName();
+    String postUid = postMessage.getUid();
+
+    InviteMessage inviteMessage = InviteMessage.builder()
+        .setId(uid)
+        .setName(name)
+        .setPost(postMessage)
+        .build();
 
     if (postUid.equals(uid)) {
       Toast.makeText(activity.getApplicationContext(), "It's your post", Toast.LENGTH_LONG).show();
       return;
     }
 
-    inviteManager.writeInvite(
-        InviteMessage.builder()
-            .setId(auth.getCurrentUser().getUid())
-            .setName(auth.getCurrentUser().getDisplayName())
-            .setPost(postMessage)
-            .build());
+    inviteManager.writeInvite(inviteMessage);
 
     Bundle bundle = new Bundle();
-    bundle.putString(CollectionName.POST_ID_KEY, postId);
-    bundle.putString(CollectionName.POST_NAME_KEY, postName);
-    bundle.putString(CollectionName.POST_UID_KEY, postUid);
-    bundle.putString(CollectionName.NAME_KEY, name);
-    bundle.putString(CollectionName.UID_KEY, uid);
+    bundle.putParcelable(CollectionName.INVITE_MESSAGE_KEY, inviteMessage);
     ((TradingActivity) activity).startChatFragment(bundle);
   }
 }

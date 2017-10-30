@@ -1,5 +1,8 @@
 package com.cwave.exchange.invite;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.cwave.exchange.post.PostMessage;
 import com.google.firebase.firestore.ServerTimestamp;
 
@@ -10,7 +13,7 @@ import java.util.Date;
  *
  *<p>Define this POJO, rather using protobuf or auto value.
  */
-public class InviteMessage {
+public class InviteMessage implements Parcelable {
   private String name;
   private String uid;
   private PostMessage post;
@@ -66,5 +69,33 @@ public class InviteMessage {
       this.post = post;
       return this;
     }
+  }
+
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel out, int flags) {
+    out.writeString(name);
+    out.writeString(uid);
+    out.writeParcelable(post, flags);
+  }
+
+  public static final Parcelable.Creator<InviteMessage> CREATOR
+      = new Parcelable.Creator<InviteMessage>() {
+    public InviteMessage createFromParcel(Parcel in) {
+      return new InviteMessage(in);
+    }
+
+    public InviteMessage[] newArray(int size) {
+      return new InviteMessage[size];
+    }
+  };
+
+  private InviteMessage(Parcel in) {
+    name = in.readString();
+    uid = in.readString();
+    post = in.readParcelable(PostMessage.class.getClassLoader());
   }
 }
