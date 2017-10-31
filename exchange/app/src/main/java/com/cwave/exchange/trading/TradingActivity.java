@@ -9,9 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -27,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.cwave.exchange.BuildConfig;
 import com.cwave.exchange.R;
 import com.cwave.exchange.chat.ChatFragment;
 import com.cwave.exchange.drawermenu.DrawerMenu;
@@ -40,25 +39,21 @@ import com.cwave.exchange.trading.OfferDialogFragment.OfferListener;
 import com.cwave.firebase.Auth;
 import com.cwave.firebase.Database;
 import com.cwave.firebase.Store;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.base.Strings;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
-
-import java.util.Map;
+import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import javax.inject.Inject;
 
@@ -89,6 +84,8 @@ public class TradingActivity extends AppCompatActivity implements
   private RecyclerView recyclerView;
   private EventListener<QuerySnapshot> eventListener;
 
+  private FirebaseRemoteConfig firebaseRemoteConfig;
+
   @Inject
   DispatchingAndroidInjector<Fragment> fragmentInjector;
 
@@ -116,6 +113,7 @@ public class TradingActivity extends AppCompatActivity implements
   }
 
   @Override
+  @AddTrace(name = "TradingActivity", enabled = true)
   protected void onCreate(Bundle savedInstanceState) {
     AndroidInjection.inject(this);
     super.onCreate(savedInstanceState);
@@ -133,6 +131,8 @@ public class TradingActivity extends AppCompatActivity implements
     FirebaseAuth.getInstance().addAuthStateListener(this);
 
     processIntent(getIntent());
+
+    loadRemotConfig();
   }
 
   @Override
@@ -389,6 +389,12 @@ public class TradingActivity extends AppCompatActivity implements
     return bundle;
   }
 
+  private void firebaseLog() {
+    FirebaseCrash.log("=== firebase ??? crash ??? log ===");
+    FirebaseCrash.logcat(Log.ERROR, "TAG", " ??? logcat ???");
+    FirebaseCrash.report(new Exception(" on create error ???"));
+  }
+
   private PendingIntent buildPendingIntent(InviteMessage inviteMessage) {
     Intent intent = new Intent(this, TradingActivity.class);
     Bundle bundle = buildNotificationBundle(inviteMessage);
@@ -397,5 +403,45 @@ public class TradingActivity extends AppCompatActivity implements
         PENDING_INTENT_REQUEST_CODE,
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
+  private void loadRemotConfig() {
+    // Get Remote Config instance.
+    firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+    FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+        .setDeveloperModeEnabled(BuildConfig.DEBUG)
+        .build();
+    firebaseRemoteConfig.setConfigSettings(configSettings);
+    firebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+
+    final String key = "test_parameter";
+    final String result = firebaseRemoteConfig.getString(key);
+
+    long cacheExpiration = 3600; // 1 hour in seconds.
+    // If your app is using developer mode, cacheExpiration is set to 0, so each fetch will
+    // retrieve values from the service.
+    if (firebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+      cacheExpiration = 0;
+    }
+
+    // cacheExpirationSeconds is set to cacheExpiration here, indicating the next fetch request
+    // will use fetch data from the Remote Config service, rather than cached parameter values,
+    // if cached parameter values are more than cacheExpiration seconds old.
+    // See Best Practices in the README for more information.
+    firebaseRemoteConfig.fetch(cacheExpiration)
+        .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+              if (task.isSuccessful()) {
+                Toast.makeText(TradingActivity.this, "Fetch Succeeded: " + result, Toast.LENGTH_SHORT).show();
+
+                // After config data is successfully fetched,
+                // it must be activated before newly fetched values are returned.
+                firebaseRemoteConfig.activateFetched();
+              } else {
+                Toast.makeText(TradingActivity.this, "Fetch Failed", Toast.LENGTH_SHORT).show();
+              }
+            }
+          });
   }
 }

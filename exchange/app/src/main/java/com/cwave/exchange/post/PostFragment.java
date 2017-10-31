@@ -29,6 +29,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -84,6 +86,9 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
     FirebaseFirestore.setLoggingEnabled(true);
     View view = inflater.inflate(R.layout.post_frame_layout, container, false);
 
+    Trace trace = FirebasePerformance.getInstance().newTrace("TradingActivity");
+    trace.start();
+
     recyclerView = (RecyclerView) view.findViewById(R.id.post_frame_recycler_view);
 
     layoutManager = new LinearLayoutManager(getActivity());
@@ -98,6 +103,8 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
         createPost(view);
       }
     });
+
+    trace.stop();
 
     return view;
   }
