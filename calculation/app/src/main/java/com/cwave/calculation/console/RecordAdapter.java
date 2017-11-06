@@ -18,9 +18,9 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 
 /** Log {@link RecyclerView} adapter. */
-public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
+public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
 
-  private static final String TAG = "LogAdapter";
+  private static final String TAG = "RecordAdapter";
 
   private final List<Question> questions;
 
@@ -37,13 +37,13 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
   }
 
   /** Constructor. */
-  public LogAdapter(List<Question> questions) {
+  public RecordAdapter(List<Question> questions) {
     Log.d(TAG, "create size: " + questions.size());
     this.questions = Preconditions.checkNotNull(questions);
   }
 
   @Override
-  public LogAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  public RecordAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     RelativeLayout layout =
         (RelativeLayout)
             LayoutInflater.from(parent.getContext())

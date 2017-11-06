@@ -3,6 +3,7 @@ package com.cwave.calculation.console;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -97,6 +98,7 @@ public class ConsoleActivity extends AppCompatActivity {
         new TabLayoutOnPageChangeListener(tabLayout) {
           @Override
           public void onPageSelected(int position) {
+            Log.d(TAG, "onPageSelected " + position);
             super.onPageSelected(position);
             updateTabDescriptions();
           }
@@ -134,26 +136,36 @@ public class ConsoleActivity extends AppCompatActivity {
     if (id == R.id.pre_k) {
       grade = Grade.preK;
       actionBar.setSubtitle(grade.toString());
+      updateFragmentGrade();
       return true;
     } else if (id == R.id.kinder) {
       grade = Grade.kinder;
       actionBar.setSubtitle(grade.toString());
+      updateFragmentGrade();
       return true;
     } else if (id == R.id.first_grade) {
       grade = Grade.first_grade;
       actionBar.setSubtitle(grade.toString());
+      updateFragmentGrade();
       return true;
     } else if (id == R.id.second_grade) {
       grade = Grade.second_grade;
       actionBar.setSubtitle(grade.toString());
+      updateFragmentGrade();
       return true;
     } else if (id == R.id.third_grade) {
       grade = Grade.third_grade;
       actionBar.setSubtitle(grade.toString());
+      updateFragmentGrade();
       return true;
     } else {
       return super.onOptionsItemSelected(item);
     }
+  }
+
+  private void updateFragmentGrade() {
+    QuestionFragment questionFragment = (QuestionFragment) getSupportFragmentManager().findFragmentById(R.id.fragement_questions);
+    questionFragment.setTotalQuestions();
   }
 
   /** Sets the content descriptions of the tabs for accessibility. */

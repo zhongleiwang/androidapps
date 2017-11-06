@@ -71,7 +71,7 @@ public class OfferDialogFragment extends DialogFragment {
     nameView.setText(bundle.getString(USER_KEY));
     uidView.setText(bundle.getString(UID_KEY));
 
-    builder.setTitle("New Offer:");
+    builder.setTitle("New Request");
 
     builder.setPositiveButton(
         "OK",

@@ -8,7 +8,13 @@ public interface QuestionStore {
   /** Lists questions. */
   List<Question> get();
 
-  /** Add a new question. */
+  /** Gets number of questions. */
+  int getNumberOfQuestions();
+
+  /** Gets number of wrong answers. */
+  int getWrongAnswers();
+
+  /** Adds a new question. */
   void add(String question, long time, boolean correct);
 
   /** Cleans up the list. */

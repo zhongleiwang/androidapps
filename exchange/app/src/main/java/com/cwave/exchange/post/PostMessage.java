@@ -3,6 +3,7 @@ package com.cwave.exchange.post;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Calendar;
@@ -254,7 +255,7 @@ public class PostMessage implements Parcelable {
       return this;
     }
     
-    public Builder getFromAmount(float fromAmount) {
+    public Builder setFromAmount(float fromAmount) {
       this.fromAmount = fromAmount;
       return this;
     }

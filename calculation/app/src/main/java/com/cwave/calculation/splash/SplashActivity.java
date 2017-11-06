@@ -1,4 +1,4 @@
-package com.cwave.exchange.splash;
+package com.cwave.calculation.splash;
 
 import android.content.SharedPreferences;
 import android.os.Build.VERSION_CODES;
@@ -8,8 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import com.cwave.exchange.R;
-import com.cwave.exchange.signin.SignInActivity;
+
+import com.cwave.calculation.R;
+import com.cwave.calculation.signin.SignInActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.crash.FirebaseCrash;

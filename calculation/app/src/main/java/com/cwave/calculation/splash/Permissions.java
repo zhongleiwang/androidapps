@@ -1,4 +1,4 @@
-package com.cwave.exchange.splash;
+package com.cwave.calculation.splash;
 
 import android.app.Activity;
 import android.content.Context;

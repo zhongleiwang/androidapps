@@ -1,5 +1,7 @@
 package com.cwave.calculation.service;
 
+import android.os.Build.VERSION_CODES;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,7 @@ public class InMemoryQuestionStoreImpl implements QuestionStore {
 
   private static final Comparator<Question> QUESTION_COMPARATOR =
       new Comparator<Question>() {
+        @RequiresApi(api = VERSION_CODES.KITKAT)
         @Override
         public int compare(Question l, Question r) {
           final int BEFORE = -1;
@@ -40,10 +43,25 @@ public class InMemoryQuestionStoreImpl implements QuestionStore {
   }
 
   @Override
+  public int getWrongAnswers() {
+    int num = 0;
+    for (Question question : questions) {
+      if (!question.getIsCorrect()) {
+        num++;
+      }
+    }
+    return num;
+  }
+
+  @Override
+  public int getNumberOfQuestions() {
+    return questions.size();
+  }
+
+  @Override
   public void add(String question, long time, boolean correct) {
     Log.d(TAG, "add " + question);
-    questions.add(
-        Question.builder().setQuestion(question).setTime(time).setIsCorrect(correct).build());
+    questions.add(new Question(question, 0, time, correct));
     Collections.sort(questions, QUESTION_COMPARATOR);
 
     display();

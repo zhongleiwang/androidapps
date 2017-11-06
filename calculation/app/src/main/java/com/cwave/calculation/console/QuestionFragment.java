@@ -5,6 +5,7 @@ import static com.cwave.calculation.util.ThreadUtils.runOnUiThread;
 import android.graphics.Color;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -20,13 +21,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.cwave.calculation.R;
 import com.cwave.calculation.dagger.MathApplication;
+import com.cwave.calculation.service.Exercise;
 import com.cwave.calculation.service.Question;
 import com.cwave.calculation.service.QuestionGenerator;
 import com.cwave.calculation.service.QuestionStore;
 import com.cwave.proto.record.Proto.Record;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.otto.Bus;
+
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 /** Fragment that displays meal log. */
@@ -42,11 +54,9 @@ public class QuestionFragment extends Fragment {
   private TextView numberTextView;
   private ProgressBar progressBar;
 
-  private int currentQuestionIndex = 0;
-  private int totalCorrectQuestions = 0;
-  private boolean answerIsWrong = false;
-
   private int totalQuestions = TOTAL_QUESTIONS;
+
+  private int tries;
 
   private Timer timer;
 
@@ -97,11 +107,12 @@ public class QuestionFragment extends Fragment {
     numberTextView = (TextView) view.findViewById(R.id.numberTextView);
     numberTextView.setText("");
 
-    timer = new Timer();
-
     progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
     progressBar.setProgress(0);
     progressBar.setMax(totalQuestions);
+
+    setTotalQuestions();
+    stopTimer();
 
     return view;
   }
@@ -118,53 +129,154 @@ public class QuestionFragment extends Fragment {
     super.onPause();
   }
 
-  private void showNextQuestion() {
-    Log.d(TAG, "showNextQuestion");
+  public void setTotalQuestions() {
+    ConsoleActivity activity = (ConsoleActivity) getActivity();
+    Grade grade = activity.getGrade();
+    if (grade == Grade.preK || grade == Grade.kinder) {
+      totalQuestions = TOTAL_QUESTIONS;
+    }
+    if (grade == Grade.first_grade || grade == Grade.second_grade || grade == Grade.third_grade) {
+      totalQuestions = 5 * TOTAL_QUESTIONS;
+    }
+  }
 
-    if (currentQuestionIndex == 0) {
-      questionStore.cleanUp();
-      ConsoleActivity activity = (ConsoleActivity) getActivity();
-      Grade grade = activity.getGrade();
-      if (grade == Grade.preK || grade == Grade.kinder) {
-        totalQuestions = TOTAL_QUESTIONS;
-      }
-      if (grade == Grade.first_grade || grade == Grade.second_grade || grade == Grade.third_grade) {
-        totalQuestions = 5 * TOTAL_QUESTIONS;
-      }
-      progressBar.setProgress(0);
-      progressBar.setMax(totalQuestions);
+  private void showResults(int num) {
+    ResultDialogFragment resultDialogFragment = new ResultDialogFragment();
+    Bundle bundle = new Bundle();
+    bundle.putInt(ResultDialogFragment.WRONG_NUMBER_KEY, num);
+    resultDialogFragment.setArguments(bundle);
+    resultDialogFragment.show(getActivity().getFragmentManager(), "");
+  }
+
+  private void storeQuestions() {
+    String uuid = UUID.randomUUID().toString();
+    Exercise exercise = Exercise.builder()
+        .setDate()
+        .setId(uuid)
+        .setName(FirebaseAuth.getInstance().getCurrentUser().getDisplayName())
+        .setUid(FirebaseAuth.getInstance().getCurrentUser().getUid())
+        .setQuestion(questionStore.get())
+        .build();
+
+    FirebaseFirestore.getInstance()
+        .collection(CollectionNames.EXERCISES)
+        .document(uuid)
+        .set(exercise)
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+          @Override
+          public void onSuccess(Void aVoid) {
+
+          }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+          @Override
+          public void onFailure(@NonNull Exception e) {
+            Log.e(TAG, "Write invite failed " + e);
+          }
+        });
+
+    // store in a collection
+    List<Question> questionList = questionStore.get();
+    CollectionReference collectionReference = FirebaseFirestore.getInstance()
+        .collection(CollectionNames.EXERCISES)
+        .document(uuid)
+        .collection(CollectionNames.QUESTIONS);
+
+    for (Question question : questionList) {
+     collectionReference.add(question);
+    }
+  }
+
+  private void reset() {
+    stopTimer();
+
+    // Send to database
+    storeQuestions();
+
+    // Gets the wrong answers before get cleared
+    int wrongs = questionStore.getWrongAnswers();
+
+    questionStore.cleanUp();
+    progressBar.setProgress(0);
+    progressBar.setMax(totalQuestions);
+
+    tries = 0;
+    answerText.clearComposingText();
+    answerText.setText("");
+    questionTextView.clearComposingText();
+    questionTextView.setText("");
+    numberTextView.clearComposingText();
+    numberTextView.setText("");
+    answerText.setBackgroundColor(Color.WHITE);
+
+    nextButton.setText("Start");
+
+    showResults(wrongs);
+    return;
+  }
+
+  private void showNextQuestion() {
+    int finished = questionStore.getNumberOfQuestions();
+    Log.d(TAG, "showNextQuestion total:" + totalQuestions + " finished: " + finished);
+
+    if (ifTimerStopped()) {
       prepareNextQuestion();
+      startTimer();
+    }
+
+    String answer = answerText.getText().toString();
+    if (answer.isEmpty()) {
       return;
     }
 
-    int answered = toInt(answerText.getText().toString());
+    int answered = toInt(answer);
     long expected = question.getAnswer();
 
     Log.d(TAG, "answered: " + answered + " expected: " + expected);
 
     if (answered == expected) {
       long questionFinishTime = System.currentTimeMillis();
-      questionStore.add(
-          questionTextView.getText().toString(),
+      String q = questionTextView.getText().toString();
+      questionStore.add(q,
           (questionFinishTime - questionStartTime) / 1000,
-          !answerIsWrong);
+          tries == 0);
 
-      if (answerIsWrong) {
-        answerIsWrong = false;
-      } else {
-        totalCorrectQuestions++;
+      finished = questionStore.getNumberOfQuestions();
+      if (finished >= totalQuestions) {
+        reset();
+        return;
       }
-      Log.d(TAG, "right");
+
+      tries = 0;
+
       prepareNextQuestion();
 
       answerText.setText("");
       answerText.setBackgroundColor(Color.WHITE);
     } else {
-      answerIsWrong = true;
+      tries++;
       answerText.setText("");
       answerText.setBackgroundColor(Color.RED);
       Log.d(TAG, "wrong");
     }
+  }
+
+  private void prepareNextQuestion() {
+    Log.d(TAG, "prepareNextQuestion");
+
+    nextButton.setText("Next");
+    numberTextView.setText(toString(questionStore.getNumberOfQuestions()));
+
+    questionStartTime = System.currentTimeMillis();
+
+    ConsoleActivity activity = (ConsoleActivity) getActivity();
+    question = questionGenerator.generate(activity.getGrade());
+    questionTextView.setText(question.getQuestion());
+
+    answerText.setText("");
+    answerText.setBackgroundColor(Color.WHITE);
+
+    progressBar.incrementProgressBy(1);
   }
 
   private String toString(int in) {
@@ -177,45 +289,6 @@ public class QuestionFragment extends Fragment {
       return 0;
     }
     return Integer.parseInt(in);
-  }
-
-  private void prepareNextQuestion() {
-    if (currentQuestionIndex >= totalQuestions) {
-      Log.d(TAG, "stop timer");
-      currentQuestionIndex = 0;
-      stopTimer();
-
-      progressBar.setProgress(0);
-      progressBar.setMax(totalQuestions);
-
-      questionTextView.setText(String.format("Wrong: %d", totalQuestions - totalCorrectQuestions));
-      nextButton.setText("Excellent!!! Restart?");
-      return;
-    }
-
-    // User proto
-    Record record = Record.newBuilder()
-        .setName("name")
-        .build();
-
-    if (currentQuestionIndex == 0) {
-      totalCorrectQuestions = 0;
-      answerIsWrong = false;
-
-      startTimer();
-    }
-
-    nextButton.setText("Next");
-    numberTextView.setText(toString(currentQuestionIndex + 1));
-
-    questionStartTime = System.currentTimeMillis();
-
-    ConsoleActivity activity = (ConsoleActivity) getActivity();
-    question = questionGenerator.generate(activity.getGrade());
-    questionTextView.setText(question.getQuestion());
-
-    currentQuestionIndex++;
-    progressBar.incrementProgressBy(1);
   }
 
   /** Start local timer. */
@@ -246,8 +319,15 @@ public class QuestionFragment extends Fragment {
   }
 
   private void stopTimer() {
+    if (timer == null) {
+      return;
+    }
     timer.cancel();
     timer = null;
+  }
+
+  private boolean ifTimerStopped() {
+    return timer == null;
   }
 
   public void onOffsetChanged(AppBarLayout appBarLayout, int i) {}

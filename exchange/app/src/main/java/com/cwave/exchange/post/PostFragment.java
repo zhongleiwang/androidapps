@@ -1,9 +1,19 @@
 package com.cwave.exchange.post;
 
+import android.Manifest.permission;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -26,6 +36,9 @@ import com.cwave.firebase.Database;
 import com.cwave.firebase.Store;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -40,7 +53,8 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 
 /** Fragment that displays posts. */
-public class PostFragment extends Fragment implements PostMessageClickListener {
+public class PostFragment extends Fragment implements PostMessageClickListener,
+    ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
   private static final String TAG = "PostFragment";
 
   private static final CollectionReference postCollection =
@@ -55,6 +69,8 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
   private LayoutManager layoutManager;
   private Adapter adapter;
   private FirestoreRecyclerAdapter firestoreRecyclerAdapter;
+  private LocationManager locationManager;
+  private Location location;
 
   @Inject
   Store store;
@@ -103,6 +119,15 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
         createPost(view);
       }
     });
+
+    locationManager = (LocationManager) activity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+    if (ActivityCompat.checkSelfPermission(activity, permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        && ActivityCompat.checkSelfPermission(activity, permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+      return view;
+    }
+    Criteria criteria = new Criteria();
+    criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+    location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
 
     trace.stop();
 
@@ -218,5 +243,39 @@ public class PostFragment extends Fragment implements PostMessageClickListener {
     Bundle bundle = new Bundle();
     bundle.putParcelable(CollectionName.INVITE_MESSAGE_KEY, inviteMessage);
     ((TradingActivity) activity).startChatFragment(bundle);
+  }
+
+  @Override
+  public void onLocationChanged(Location location) {
+  }
+
+  @Override
+  public void onStatusChanged(String provider, int status, Bundle extras) {
+
+  }
+
+  @Override
+  public void onProviderEnabled(String provider) {
+
+  }
+
+  @Override
+  public void onProviderDisabled(String provider) {
+
+  }
+
+  @Override
+  public void onConnected(@Nullable Bundle bundle) {
+    //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+  }
+
+  @Override
+  public void onConnectionSuspended(int i) {
+
+  }
+
+  @Override
+  public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
   }
 }

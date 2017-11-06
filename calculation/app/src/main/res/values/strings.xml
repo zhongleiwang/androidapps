@@ -24,4 +24,6 @@
   <string name="app_welcome">Welcome!</string>
   <string name="button_start_app">Start</string>
 
+  <string name="filter_view_https_cwave">cwave.com</string>
+
 </resources>

@@ -390,9 +390,9 @@ public class TradingActivity extends AppCompatActivity implements
   }
 
   private void firebaseLog() {
-    FirebaseCrash.log("=== firebase ??? crash ??? log ===");
-    FirebaseCrash.logcat(Log.ERROR, "TAG", " ??? logcat ???");
-    FirebaseCrash.report(new Exception(" on create error ???"));
+    FirebaseCrash.log("=== firebase crash log ===");
+    FirebaseCrash.logcat(Log.ERROR, "TAG", " logcat");
+    FirebaseCrash.report(new Exception(" on create error "));
   }
 
   private PendingIntent buildPendingIntent(InviteMessage inviteMessage) {

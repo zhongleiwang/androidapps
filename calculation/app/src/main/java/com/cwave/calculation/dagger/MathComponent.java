@@ -1,6 +1,7 @@
 package com.cwave.calculation.dagger;
 
 import com.cwave.calculation.console.ConsoleComponent;
+
 import dagger.Component;
 import javax.inject.Singleton;
 

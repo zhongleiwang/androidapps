@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.protobuf'
 
 buildscript {
@@ -15,6 +16,8 @@ buildscript {
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
         // firebase
         classpath 'com.google.gms:google-services:3.1.1'
+        // firebase performance monitoring
+        classpath 'com.google.firebase:firebase-plugins:1.1.1'
     }
 }
 
@@ -93,6 +96,8 @@ dependencies {
     compile 'com.google.dagger:dagger-android:2.11'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    // Annotation parcel extension, https://github.com/rharter/auto-value-parcel
+    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.5'
     // Date
     compile 'net.danlew:android.joda:2.9.3.1'
     compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.7'
@@ -110,9 +115,29 @@ dependencies {
     compile 'com.googlecode.protobuf-java-format:protobuf-java-format:1.4'
     // firebase
     compile 'com.google.firebase:firebase-core:11.4.2'
+    compile 'com.google.firebase:firebase-config:11.4.2'
+    compile 'com.google.firebase:firebase-crash:11.4.2'
     compile 'com.google.firebase:firebase-database:11.4.2'
     compile 'com.google.firebase:firebase-firestore:11.4.2'
+    compile 'com.google.firebase:firebase-messaging:11.4.2'
+    compile 'com.google.firebase:firebase-perf:11.4.2'
     compile 'com.google.firebase:firebase-storage:11.4.2'
+    // firebase-jobdispatcher
+    compile 'com.firebase:firebase-jobdispatcher:0.6.0'
+    // FirebaseUI (for authentication)
+    compile 'com.firebaseui:firebase-ui:3.1.0'
+    // FirebaseUI (for authentication)
+    compile 'com.firebaseui:firebase-ui-auth:3.1.0'
+    // FirebaseUI for Firebase Realtime Database
+    compile 'com.firebaseui:firebase-ui-database:2.1.0'
+    // FirebaseUI for Cloud Firestore
+    compile 'com.firebaseui:firebase-ui-firestore:3.1.0'
+    // FirebaseUI for Cloud Storage
+    compile 'com.firebaseui:firebase-ui-storage:3.1.0'
+     // Required only if Facebook login support is required
+    compile 'com.facebook.android:facebook-login:4.27.0'
+    // Required only if Twitter login support is required
+    compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
     // proto
     compile project(':proto')
     // junit

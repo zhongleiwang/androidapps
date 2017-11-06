@@ -7,7 +7,7 @@ import android.util.Log;
 
 /** {@link FragmentPagerAdapter} to display debug information. */
 public class ConsolePagerAdapter extends FragmentPagerAdapter {
-  private static final String TAG = ConsolePagerAdapter.class.getSimpleName();
+  private static final String TAG = "CPagerAdapter";
 
   private enum PagerType {
     QUESTION(0),
@@ -41,7 +41,7 @@ public class ConsolePagerAdapter extends FragmentPagerAdapter {
       return new QuestionFragment();
     }
 
-    return new LogFragment();
+    return new RecordFragment();
   }
 
   @Override

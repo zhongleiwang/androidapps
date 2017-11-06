@@ -7,7 +7,5 @@ public interface ConsoleComponent {
 
   void inject(QuestionFragment target);
 
-  void inject(LogFragment target);
-
-  void inject(HistoryFragment target);
+  void inject(RecordFragment target);
 }
