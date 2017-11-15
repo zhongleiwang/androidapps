@@ -10,11 +10,11 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.0'
         // the latest version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         // protobuf plugin
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.2'
         // firebase
         classpath 'com.google.gms:google-services:3.1.1'
         // firebase performance monitoring
@@ -24,7 +24,7 @@ buildscript {
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.cwave.exchange"
         multiDexEnabled true
@@ -107,7 +107,7 @@ dependencies {
     // https://github.com/google/dagger/issues/753
     annotationProcessor 'com.google.guava:guava:23.0'
     // auto value
-    provided 'com.google.auto.value:auto-value:1.5'
+    annotationProcessor 'com.google.auto.value:auto-value:1.5'
     // protobuf
     compile 'com.google.protobuf:protobuf-lite:3.0.0'
     // protobuf-java-format

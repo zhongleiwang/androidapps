@@ -1,9 +1,6 @@
 package com.cwave.calculation.console;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +10,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.Tab;
 import android.support.design.widget.TabLayout.TabLayoutOnPageChangeListener;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,10 +20,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+
 import com.cwave.calculation.R;
 import com.cwave.calculation.dagger.MathApplication;
 import com.squareup.otto.Bus;
+
+import java.util.List;
+
 import javax.inject.Inject;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /** Class to display debug information. */
 public class ConsoleActivity extends AppCompatActivity {
@@ -164,8 +168,13 @@ public class ConsoleActivity extends AppCompatActivity {
   }
 
   private void updateFragmentGrade() {
-    QuestionFragment questionFragment = (QuestionFragment) getSupportFragmentManager().findFragmentById(R.id.fragement_questions);
-    questionFragment.setTotalQuestions();
+    List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+    for (Fragment f : fragmentList) {
+      if (f instanceof QuestionFragment) {
+        QuestionFragment qf = (QuestionFragment) f;
+        qf.setTotalQuestions();
+      }
+    }
   }
 
   /** Sets the content descriptions of the tabs for accessibility. */

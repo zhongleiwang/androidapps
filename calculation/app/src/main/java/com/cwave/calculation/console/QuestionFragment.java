@@ -1,7 +1,5 @@
 package com.cwave.calculation.console;
 
-import static com.cwave.calculation.util.ThreadUtils.runOnUiThread;
-
 import android.graphics.Color;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -19,17 +17,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.cwave.calculation.R;
 import com.cwave.calculation.dagger.MathApplication;
 import com.cwave.calculation.service.Exercise;
 import com.cwave.calculation.service.Question;
 import com.cwave.calculation.service.QuestionGenerator;
 import com.cwave.calculation.service.QuestionStore;
-import com.cwave.proto.record.Proto.Record;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.otto.Bus;
@@ -40,6 +37,8 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import javax.inject.Inject;
+
+import static com.cwave.calculation.util.ThreadUtils.runOnUiThread;
 
 /** Fragment that displays meal log. */
 public class QuestionFragment extends Fragment {

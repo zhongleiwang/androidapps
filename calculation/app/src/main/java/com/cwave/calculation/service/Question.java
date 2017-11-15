@@ -3,8 +3,6 @@ package com.cwave.calculation.service;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.auto.value.AutoValue;
-
 /** Represents a question. */
 public class Question implements Parcelable {
 
