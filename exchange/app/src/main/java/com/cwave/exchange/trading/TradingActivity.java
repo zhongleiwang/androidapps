@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.cwave.exchange.BuildConfig;
 import com.cwave.exchange.R;
 import com.cwave.exchange.chat.ChatFragment;
 import com.cwave.exchange.drawermenu.DrawerMenu;
@@ -409,7 +408,7 @@ public class TradingActivity extends AppCompatActivity implements
     // Get Remote Config instance.
     firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
     FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-        .setDeveloperModeEnabled(BuildConfig.DEBUG)
+        .setDeveloperModeEnabled(true)
         .build();
     firebaseRemoteConfig.setConfigSettings(configSettings);
     firebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);

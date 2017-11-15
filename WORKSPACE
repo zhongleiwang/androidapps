@@ -312,56 +312,92 @@ maven_jar(
 
 maven_aar(
     name = "firebase-auth",
-    artifact = "com.google.firebase:firebase-auth:11.4.2",
+    artifact = "com.google.firebase:firebase-auth:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-analytics",
-    artifact = "com.google.firebase:firebase-analytics:11.4.2",
+    artifact = "com.google.firebase:firebase-analytics:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-analytics-impl",
-    artifact = "com.google.firebase:firebase-analytics-impl:11.4.2",
+    artifact = "com.google.firebase:firebase-analytics-impl:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-common",
-    artifact = "com.google.firebase:firebase-common:11.4.2",
+    artifact = "com.google.firebase:firebase-common:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-core",
-    artifact = "com.google.firebase:firebase-core:11.4.2",
+    artifact = "com.google.firebase:firebase-core:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-database",
-    artifact = "com.google.firebase:firebase-database:11.4.2",
+    artifact = "com.google.firebase:firebase-database:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-database-connection",
-    artifact = "com.google.firebase:firebase-database-connection:11.4.2",
+    artifact = "com.google.firebase:firebase-database-connection:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-firestore",
-    artifact = "com.google.firebase:firebase-firestore:11.4.2",
+    artifact = "com.google.firebase:firebase-firestore:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "firebase-config",
+    artifact = "com.google.firebase:firebase-config:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "firebase-crash",
+    artifact = "com.google.firebase:firebase-crash:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "firebase-iid",
-    artifact = "com.google.firebase:firebase-iid:11.4.2",
+    artifact = "com.google.firebase:firebase-iid:11.6.0",
     settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "firebase-perf",
+    artifact = "com.google.firebase:firebase-perf:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "firebase-storage",
+    artifact = "com.google.firebase:firebase-storage:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "firebase-messaging",
+    artifact = "com.google.firebase:firebase-messaging:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_firebase_firebase_jobdispatcher",
+    artifact = "com.firebase:firebase-jobdispatcher:0.6.0",
+    settings = "//third_party/settings:jcenter.xml",
 )
 
 maven_aar(
@@ -373,6 +409,41 @@ maven_aar(
 maven_aar(
     name = "firebase-ui-auth",
     artifact = "com.firebaseui:firebase-ui-auth:3.1.0",
+    deps = [
+        "@com_android_support_appcompat//aar",
+        "@com_android_support_constraint_constraint_layout//aar",        
+        "@com_android_support_design//aar",        
+        "@play-services-auth//aar",
+        "@play-services-base//aar",
+        "@play-services-basement//aar",
+        "@play-services-location//aar",
+        "@play-services-tasks//aar",
+        "@play-services//aar",
+    ],
+    settings = "//third_party/settings:jcenter.xml",
+)
+
+maven_aar(
+    name = "firebase-ui-config",
+    artifact = "com.firebaseui:firebase-ui-:3.1.0",
+    settings = "//third_party/settings:jcenter.xml",
+)
+
+maven_aar(
+    name = "firebase-ui-crash",
+    artifact = "com.firebaseui:firebase-ui-:3.1.0",
+    settings = "//third_party/settings:jcenter.xml",
+)
+
+maven_aar(
+    name = "firebase-ui-message",
+    artifact = "com.firebaseui:firebase-ui-:3.1.0",
+    settings = "//third_party/settings:jcenter.xml",
+)
+
+maven_aar(
+    name = "firebase-ui-perf",
+    artifact = "com.firebaseui:firebase-ui-:3.1.0",
     settings = "//third_party/settings:jcenter.xml",
 )
 
@@ -395,12 +466,6 @@ maven_aar(
 )
 
 maven_aar(
-    name = "play-services-tasks",
-    artifact = "com.google.android.gms:play-services-tasks:11.4.2",
-    settings = "//third_party/settings:jcenter.xml",
-)
-
-maven_aar(
     name = "facebook-common",
     artifact = "com.facebook.android:facebook-common:4.27.0",
 )
@@ -416,9 +481,47 @@ maven_aar(
 )
 
 maven_aar(
+    name = "play-services",
+    artifact = "com.google.android.gms:play-services:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",    
+)
+
+maven_aar(
+    name = "play-services-auth",
+    artifact = "com.google.android.gms:play-services-auth:11.6.0",
+    deps = [
+        "@play-services-base//aar",
+        "@play-services-basement//aar",
+        "@play-services//aar",
+    ],
+    settings = "//third_party/settings:google-maven.xml",    
+)
+
+maven_aar(
+    name = "play-services-base",
+    artifact = "com.google.android.gms:play-services-base:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",    
+)
+
+maven_aar(
     name = "play-services-basement",
-    artifact = "com.google.android.gms:play-services-basement:11.4.2",
-    settings = "//third_party/settings:jcenter.xml",
+    artifact = "com.google.android.gms:play-services-basement:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",    
+)
+
+maven_aar(
+    name = "play-services-location",
+    artifact = "com.google.android.gms:play-services-location:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",
+    deps = [
+        "@play-services-base//aar",
+    ],
+)
+
+maven_aar(
+    name = "play-services-tasks",
+    artifact = "com.google.android.gms:play-services-tasks:11.6.0",
+    settings = "//third_party/settings:google-maven.xml",    
 )
 
 maven_aar(
@@ -430,12 +533,21 @@ maven_aar(
 maven_aar(
     name = "com_android_support_design",
     artifact = "com.android.support:design:26.1.0",
+    deps = [
+        "@com_android_support_appcompat//aar",
+    ],
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support_compat",
     artifact = "com.android.support:support-compat:26.1.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_android_support_recyclerview_v7",
+    artifact = "com.android.support:recyclerview-v7:27.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 

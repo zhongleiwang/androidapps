@@ -247,7 +247,7 @@ java_library(
     name = "volley",
     exports = ["@com_mcxiaoke_volley_library//jar"],
 )
-        
+
 java_library(
     name = "android_arch_lifecycle_common",
     exports = ["@android_arch_lifecycle_common//jar"],
