@@ -47,7 +47,7 @@ android_library(
         "@com_android_support_appcompat//aar",
         "@com_android_support_constraint_constraint_layout//aar",
         "@com_android_support_design//aar",
-        "@com_android_support_recyclerview_v7//aar",
+        "@com_android_support_recyclerview//aar",
         "@com_android_support_support_compat//aar",
         "@com_android_support_support_core_ui//aar",
         "@com_android_support_support_core_utils//aar",

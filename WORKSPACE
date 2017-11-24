@@ -303,13 +303,6 @@ maven_jar(
     sha1 = "04205dd8c33ada1468ab377afff0be95304ef72a",
 )
 
-maven_jar(
-    name = "com_android_support_support_annotations",
-    artifact = "com.android.support:support-annotations:26.1.0",
-    server = "google_maven_server",
-    sha1 = "0814258103cf26a15fcc26ecce35f5b7d24b73f8",
-)
-
 maven_aar(
     name = "firebase-auth",
     artifact = "com.google.firebase:firebase-auth:11.6.0",
@@ -530,6 +523,13 @@ maven_aar(
     settings = "//third_party/settings:google-maven.xml",
 )
 
+maven_jar(
+    name = "com_android_support_support_annotations",
+    artifact = "com.android.support:support-annotations:26.1.0",
+    server = "google_maven_server",
+    sha1 = "0814258103cf26a15fcc26ecce35f5b7d24b73f8",
+)
+
 maven_aar(
     name = "com_android_support_design",
     artifact = "com.android.support:design:26.1.0",
@@ -546,7 +546,7 @@ maven_aar(
 )
 
 maven_aar(
-    name = "com_android_support_recyclerview_v7",
+    name = "com_android_support_recyclerview",
     artifact = "com.android.support:recyclerview-v7:27.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
