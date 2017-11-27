@@ -72,6 +72,13 @@ android_library(
         "@play-services-location//aar",
         "@play-services-tasks//aar",
         "@play-services//aar",
+        "@facebook-login//aar",
+        "@twitter_core//aar",
+        "@com_squareup_retrofit2_retrofit//jar",
+        "@com_google_code_gson_gson//jar",
+        "@com_squareup_okhttp3_okhttp//jar",
+        "@com_squareup_okio_okio//jar",
+        "@com_squareup_okhttp_okhttp//jar"
     ],
 )
 
@@ -83,11 +90,24 @@ android_binary(
     manifest_values = {
         "applicationId": "com.cwave.calculation",
     },
-    multidex = "native",
+    main_dex_proguard_specs = [
+        ":proguard-android.txt",
+    ],
+    proguard_specs = [
+        ":proguard.pro",
+    ],
+    multidex = "legacy",
     resource_files = glob(["res/**"]) + [
         ":google_services_json",
     ],
     deps = [
         ":calculation_lib",
     ],
+)
+
+exports_files(
+    [
+        "proguard-android.txt",
+        "proguard.pro",
+    ]
 )

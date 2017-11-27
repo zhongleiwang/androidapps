@@ -290,6 +290,30 @@ maven_jar(
 )
 
 maven_jar(
+    name = "com_squareup_okhttp3_okhttp",
+    artifact = "com.squareup.okhttp3:okhttp:3.4.2",
+    sha1 = "ccde00f7ccc77af5a6d5752e2cb21f6d8998289f",
+)
+
+maven_jar(
+    name = "com_squareup_retrofit2_retrofit",
+    artifact = "com.squareup.retrofit2:retrofit:2.1.0",
+    sha1 = "2de7cd8b95b7021b1d597f049bcb422055119f2c",
+)
+
+maven_jar(
+    name = "com_google_code_gson_gson",
+    artifact = "com.google.code.gson:gson:2.7",
+    sha1 = "751f548c85fa49f330cecbb1875893f971b33c4e",
+)
+
+maven_jar(
+    name = "com_squareup_okio_okio",
+    artifact = "com.squareup.okio:okio:1.9.0",
+    sha1 = "f824591a0016efbaeddb8300bee54832a1398cfa",
+)
+
+maven_jar(
     name = "android_arch_lifecycle_common",
     artifact = "android.arch.lifecycle:common:1.0.3",
     server = "google_maven_server",
@@ -461,6 +485,13 @@ maven_aar(
 maven_aar(
     name = "facebook-common",
     artifact = "com.facebook.android:facebook-common:4.27.0",
+    deps = [
+        "@facebook-core//aar",
+        "@com_android_support_appcompat//aar",
+        "@com_android_support_cardview//aar",
+        "@com_android_support_customtabs//aar",
+        "@com_android_support_support_v4//aar",
+    ],
 )
 
 maven_aar(
@@ -471,12 +502,28 @@ maven_aar(
 maven_aar(
     name = "facebook-login",
     artifact = "com.facebook.android:facebook-login:4.27.0",
+    deps = [
+        "@facebook-core//aar",
+        "@facebook-common//aar",
+    ],
+)
+
+maven_aar(
+    name = "twitter_core",
+    artifact = "com.twitter.sdk.android:twitter-core:3.0.0",
+    deps = [
+        "@com_google_code_gson_gson//jar",
+        "@com_squareup_retrofit2_retrofit//jar",
+        "@com_squareup_okhttp3_okhttp//jar",
+        "@com_squareup_okio_okio//jar",
+    ],
+    settings = "//third_party/settings:jcenter.xml",
 )
 
 maven_aar(
     name = "play-services",
     artifact = "com.google.android.gms:play-services:11.6.0",
-    settings = "//third_party/settings:google-maven.xml",    
+    settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
@@ -487,19 +534,19 @@ maven_aar(
         "@play-services-basement//aar",
         "@play-services//aar",
     ],
-    settings = "//third_party/settings:google-maven.xml",    
+    settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "play-services-base",
     artifact = "com.google.android.gms:play-services-base:11.6.0",
-    settings = "//third_party/settings:google-maven.xml",    
+    settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "play-services-basement",
     artifact = "com.google.android.gms:play-services-basement:11.6.0",
-    settings = "//third_party/settings:google-maven.xml",    
+    settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
@@ -514,7 +561,7 @@ maven_aar(
 maven_aar(
     name = "play-services-tasks",
     artifact = "com.google.android.gms:play-services-tasks:11.6.0",
-    settings = "//third_party/settings:google-maven.xml",    
+    settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
@@ -554,6 +601,12 @@ maven_aar(
 maven_aar(
     name = "com_android_support_appcompat",
     artifact = "com.android.support:appcompat-v7:26.1.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_android_support_customtabs",
+    artifact = "com.android.support:customtabs:26.1.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
