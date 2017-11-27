@@ -16,6 +16,10 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
+  <!-- TODO: These are needed for bazel build, but NOT for gradle build. -->
+  <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+  <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES" />
+
   <application
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"

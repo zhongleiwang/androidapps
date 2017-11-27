@@ -404,8 +404,8 @@ maven_aar(
     artifact = "com.firebaseui:firebase-ui-auth:3.1.0",
     deps = [
         "@com_android_support_appcompat//aar",
-        "@com_android_support_constraint_constraint_layout//aar",        
-        "@com_android_support_design//aar",        
+        "@com_android_support_constraint_constraint_layout//aar",
+        "@com_android_support_design//aar",
         "@play-services-auth//aar",
         "@play-services-base//aar",
         "@play-services-basement//aar",
@@ -547,13 +547,43 @@ maven_aar(
 
 maven_aar(
     name = "com_android_support_recyclerview",
-    artifact = "com.android.support:recyclerview-v7:27.0.0",
+    artifact = "com.android.support:recyclerview-v7:26.1.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_appcompat",
     artifact = "com.android.support:appcompat-v7:26.1.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_android_support_support-compat",
+    artifact = "com.android.support:support-compat:26.1.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_android_support_support_core_ui",
+    artifact = "com.android.support:support-core-ui:26.1.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_android_support_support_fragment",
+    artifact = "com.android.support:support-fragment:26.1.0",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_android_support_multidex",
+    artifact = "com.android.support:multidex:1.0.1",
+    settings = "//third_party/settings:google-maven.xml",
+)
+
+maven_aar(
+    name = "com_android_support_cardview",
+    artifact = "com.android.support:cardview-v7:26.1.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
