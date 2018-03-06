@@ -78,7 +78,7 @@ android_library(
         "@com_google_code_gson_gson//jar",
         "@com_squareup_okhttp3_okhttp//jar",
         "@com_squareup_okio_okio//jar",
-        "@com_squareup_okhttp_okhttp//jar"
+        "@com_squareup_okhttp_okhttp//jar",
     ],
 )
 
@@ -90,13 +90,10 @@ android_binary(
     manifest_values = {
         "applicationId": "com.cwave.calculation",
     },
-    main_dex_proguard_specs = [
-        ":proguard-android.txt",
-    ],
+    multidex = "native",
     proguard_specs = [
         ":proguard.pro",
     ],
-    multidex = "legacy",
     resource_files = glob(["res/**"]) + [
         ":google_services_json",
     ],
@@ -109,5 +106,5 @@ exports_files(
     [
         "proguard-android.txt",
         "proguard.pro",
-    ]
+    ],
 )
