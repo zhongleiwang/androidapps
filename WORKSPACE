@@ -1,8 +1,3 @@
-local_repository(
-    name = "kythe",
-    path = "/Users/zwang/src/kythe",
-)
-
 # Set the $ANDROID_HOME and $ANDROID_NDK_HOME environment.
 android_sdk_repository(name = "androidsdk")
 android_ndk_repository(name = "androidndk")
