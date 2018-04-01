@@ -1,3 +1,14 @@
+cc_library(
+    name = "log",
+    srcs = [
+        "log.cc",
+    ],
+    copts = [
+        "-fPIE",
+        "-pie",
+    ],
+)
+
 cc_binary(
     name = "main",
     srcs = [
@@ -15,4 +26,7 @@ cc_binary(
         "-Wl,-z,defs", 
         "-Wl,--no-undefined", 
     ],
+    deps = [
+        ":log",
+    ]
 )

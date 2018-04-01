@@ -1,11 +1,13 @@
 #include <android/log.h> 
 #include <stdio.h> 
 
+extern int log();
+
 int main() { 
+  printf("hello world !!!\n");
+  __android_log_print (ANDROID_LOG_FATAL, "???", "hello world!");
 
-  int i = 99; 
-  printf("hello ??? %d !!!\n", i); 
-  __android_log_print (ANDROID_LOG_FATAL, "???", "%d", i); 
-  return 0; 
+  log();
 
+  return 0;
 } 
