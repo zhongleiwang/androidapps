@@ -86,7 +86,6 @@ android_binary(
     name = "calculation",
     custom_package = "com.cwave.calculation",
     manifest = "AndroidManifest.xml",
-    manifest_merger = "android",
     manifest_values = {
         "applicationId": "com.cwave.calculation",
     },

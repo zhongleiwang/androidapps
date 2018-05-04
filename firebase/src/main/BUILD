@@ -69,7 +69,6 @@ android_binary(
     name = "firebase",
     custom_package = "com.cwave.exchange",
     manifest = "AndroidManifest.xml",
-    manifest_merger = "android",
     manifest_values = {
         "applicationId": "com.cwave.firebase",
     },
