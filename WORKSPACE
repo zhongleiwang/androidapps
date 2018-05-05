@@ -13,8 +13,8 @@ maven_server(
 
 http_archive(
     name = "dagger",
-    url = "https://github.com/google/dagger/archive/dagger-2.11.zip",
-    strip_prefix = "dagger-dagger-2.11",
+    url = "https://github.com/google/dagger/archive/dagger-2.13.zip",
+    strip_prefix = "dagger-dagger-2.13",
 )
 
 # proto_library, cc_proto_library, and java_proto_library rules implicitly
