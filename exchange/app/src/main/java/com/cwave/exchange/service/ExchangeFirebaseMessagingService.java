@@ -113,7 +113,7 @@ public class ExchangeFirebaseMessagingService extends FirebaseMessagingService {
     String channelId = getString(R.string.default_notification_channel_id);
     Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     NotificationCompat.Builder notificationBuilder =
-        new NotificationCompat.Builder(this, channelId)
+        new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.ic_notifications_active_black_24dp)
         .setContentTitle("FCM Message")
         .setContentText(messageBody);

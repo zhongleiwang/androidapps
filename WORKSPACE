@@ -13,8 +13,8 @@ maven_server(
 
 http_archive(
     name = "dagger",
-    url = "https://github.com/google/dagger/archive/dagger-2.13.zip",
-    strip_prefix = "dagger-dagger-2.13",
+    url = "https://github.com/google/dagger/archive/2.15.zip",
+    strip_prefix = "dagger-2.15",
 )
 
 # proto_library, cc_proto_library, and java_proto_library rules implicitly
@@ -62,20 +62,20 @@ maven_jar(
 
 maven_jar(
     name = "com_google_guava_guava",
-    artifact = "com.google.guava:guava:23.0",
-    sha1 = "c947004bb13d18182be60077ade044099e4f26f1",
-)
-
-maven_jar(
-    name = "com_google_guava_guava_android",
-    artifact = "com.google.guava:guava:23.0-android",
-    sha1 = "024e15a141252eb80c53381d78ef61efd1353763",
+    artifact = "com.google.guava:guava:23.3-jre",
+    sha1 = "9124c2675a9de3ba953f66d62339cf62f8e1a143",
 )
 
 maven_jar(
     name = "com_google_guava_guava_testlib",
-    artifact = "com.google.guava:guava-testlib:21.0-rc1",
-    sha1 = "13f0f0dce4e710bb0bb791bd07f6e9858670a865",
+    artifact = "com.google.guava:guava-testlib:23.3-jre",
+    sha1 = "5dd4cc9849497042d84b782f8a1eed2b7dae290c",
+)
+
+maven_jar(
+    name = "com_google_guava_guava_android",
+    artifact = "com.google.guava:guava:23.3-android",
+    sha1 = "024e15a141252eb80c53381d78ef61efd1353763",
 )
 
 maven_jar(
@@ -97,8 +97,8 @@ maven_jar(
 
 maven_jar(
     name = "com_google_auto_auto_common",
-    artifact = "com.google.auto:auto-common:0.8",
-    sha1 = "c6f7af0e57b9d69d81b05434ef9f3c5610d498c4",
+    artifact = "com.google.auto:auto-common:0.10",
+    sha1 = "c8f153ebe04a17183480ab4016098055fb474364",
 )
 
 maven_jar(
@@ -127,8 +127,8 @@ maven_jar(
 
 maven_jar(
     name = "com_google_errorprone_error_prone_annotations",
-    artifact = "com.google.errorprone:error_prone_annotations:2.0.12",
-    sha1 = "8530d22d4ae8419e799d5a5234e0d2c0dcf15d4b",
+    artifact = "com.google.errorprone:error_prone_annotations:2.1.3",
+    sha1 = "39b109f2cd352b2d71b52a3b5a1a9850e1dc304b",
 )
 
 maven_jar(
@@ -539,14 +539,14 @@ maven_aar(
 
 maven_jar(
     name = "com_android_support_support_annotations",
-    artifact = "com.android.support:support-annotations:26.1.0",
+    artifact = "com.android.support:support-annotations:25.0.0",
     server = "google_maven_server",
     sha1 = "0814258103cf26a15fcc26ecce35f5b7d24b73f8",
 )
 
 maven_aar(
     name = "com_android_support_design",
-    artifact = "com.android.support:design:26.1.0",
+    artifact = "com.android.support:design:25.0.0",
     deps = [
         "@com_android_support_appcompat//aar",
     ],
@@ -555,43 +555,43 @@ maven_aar(
 
 maven_aar(
     name = "com_android_support_support_compat",
-    artifact = "com.android.support:support-compat:26.1.0",
+    artifact = "com.android.support:support-compat:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_recyclerview",
-    artifact = "com.android.support:recyclerview-v7:26.1.0",
+    artifact = "com.android.support:recyclerview-v7:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_appcompat",
-    artifact = "com.android.support:appcompat-v7:26.1.0",
+    artifact = "com.android.support:appcompat-v7:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_customtabs",
-    artifact = "com.android.support:customtabs:26.1.0",
+    artifact = "com.android.support:customtabs:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support-compat",
-    artifact = "com.android.support:support-compat:26.1.0",
+    artifact = "com.android.support:support-compat:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support_core_ui",
-    artifact = "com.android.support:support-core-ui:26.1.0",
+    artifact = "com.android.support:support-core-ui:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support_fragment",
-    artifact = "com.android.support:support-fragment:26.1.0",
+    artifact = "com.android.support:support-fragment:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
@@ -603,31 +603,31 @@ maven_aar(
 
 maven_aar(
     name = "com_android_support_cardview",
-    artifact = "com.android.support:cardview-v7:26.1.0",
+    artifact = "com.android.support:cardview-v7:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support_v4",
-    artifact = "com.android.support:support-v4:26.1.0",
+    artifact = "com.android.support:support-v4:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support_media_compat",
-    artifact = "com.android.support:support-media-compat:26.1.0",
+    artifact = "com.android.support:support-media-compat:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support_core_utils",
-    artifact = "com.android.support:support-core-utils:26.1.0",
+    artifact = "com.android.support:support-core-utils:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_support_core_ui",
-    artifact = "com.android.support:support-core-ui:26.1.0",
+    artifact = "com.android.support:support-core-ui:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
@@ -639,12 +639,19 @@ maven_aar(
 
 maven_aar(
     name = "com_android_support_support_vector_drawable",
-    artifact = "com.android.support:support-vector-drawable:26.1.0",
+    artifact = "com.android.support:support-vector-drawable:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
 
 maven_aar(
     name = "com_android_support_animated_vector_drawable",
-    artifact = "com.android.support:animated-vector-drawable:26.1.0",
+    artifact = "com.android.support:animated-vector-drawable:25.0.0",
     settings = "//third_party/settings:google-maven.xml",
 )
+
+maven_jar(
+    name = "org_checkerframework_checker_compat_qual",
+    artifact = "org.checkerframework:checker-compat-qual:2.3.0",
+    sha1 = "69cb4fea55a9d89b8827d107f17c985cc1a76052",
+)
+
